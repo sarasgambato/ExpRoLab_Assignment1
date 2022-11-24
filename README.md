@@ -60,7 +60,7 @@ There are two main classes:
 - `LOCATION`: can be either a `ROOM` (location with only one door) or a `CORRIDOR` (location with *at least* one door)
 - `DOOR`: individual that connects two locations
 
-### Requirements & Working hypothesis
+### <a id="req"></a> Requirements & Working hypothesis
 The requirements were:
 1. The robot should spawn in room E, which is dedicated to recharging
 2. The robot should mainly check the corridors
@@ -72,6 +72,7 @@ In order to accomplish all these objectives, a few hypothesis were made by the a
 - If there are no urgent rooms, then the robot continuously checks the corridors C1 and C2
 - Corridors C1 and C2 are not checked for urgency, given that the robot mainly stays in the corridor and also every time the robot checks a room, then it inevitably has to go check the connected corridor
 - The battery time has been set at 2 minutes, after which the robot must go to room E. The downside of choosing an autonomy time this high is that the robot will take 2 minutes also to recharge. However, the author considered this a necessity for simulation purposes, in order to see if the algorithm worked in a proper way (i.e. the robot check only the corridors until some room becomes urgent). If the user wants to change the battery time, it is sufficient to change the value of the variable `BATTERY_TIME` in the script `robot_states.py`
+- Whne the robot needs to recharge, if room E is not directly reachable, it moves randomly until room E is reachable
 
 ### System's features
 
@@ -80,7 +81,7 @@ In order to accomplish all these objectives, a few hypothesis were made by the a
 
 
 ### Possible technical improvement
-
+As mentioned in the [working hypothesis section](#req), when the robot needs to recharge it moves randomly until it reaches room E. To simulate movement, the author put a `rospy.sleep(5)`, which could be improved by using a service.
 
 ## Authors & Contacts
 [Sara Sgambato](https://github.com/sarasgambato)
