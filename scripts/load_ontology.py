@@ -1,89 +1,100 @@
 #! /usr/bin/env python3
-import rospy
-# Import the armor client class
-from ontology.armor_client import ArmorClient
+
+"""
+.. module:: load_ontology
+    :platform: Unix
+    :synopsis: Python module to load the topological map.
+
+.. moduleauthor:: Sara Sgambato s4648592@studenti.unige.it
+
+This node adds all the wanted individuals in the map and their properties and it creates all the connections.
+"""
+
+import time
+from armor_client import ArmorClient
 from os.path import dirname, realpath
+client = ArmorClient("armor_client", "my_ontology") 
 
 path = dirname(realpath(__file__))
 # Put the path of the file.owl
 path = path + "/../../topological_map/"
 
-client = ArmorClient("test","ontology")
 # Initializing with buffered manipulation and reasoning
-client.utils.load_ref_from_file(path + "topological_map.owl", "http://bnc/exp-rob-lab/2022-23", True, "PELLET", True, False)
+client.utils.load_ref_from_file(path + "my_ontology_map.owl", "http://bnc/exp-rob-lab/2022-23", True, "PELLET", False, False)
 
 client.utils.mount_on_ref()
 client.utils.set_log_to_terminal(True)
 
-# ADD ALL OUR AXIOMS
-client.manipulation.add_ind_to_class("R1", "LOCATION")
-print("Added R1 to LOCATION")
-client.manipulation.add_ind_to_class("R2", "LOCATION")
-print("Added R2 to LOCATION")
-client.manipulation.add_ind_to_class("R3", "LOCATION")
-print("Added R3 to LOCATION")
-client.manipulation.add_ind_to_class("R4", "LOCATION")
-print("Added R4 to LOCATION")
-client.manipulation.add_ind_to_class("C1", "LOCATION")
-print("Added C1 to LOCATION")
-client.manipulation.add_ind_to_class("C2", "LOCATION")
-print("Added C2 to LOCATION")
-client.manipulation.add_ind_to_class("E", "LOCATION")
-print("Added E to LOCATION")
-client.manipulation.add_ind_to_class("D1", "DOOR")
-print("Added D1 to DOOR")
-client.manipulation.add_ind_to_class("D2", "DOOR")
-print("Added D2 to DOOR")
-client.manipulation.add_ind_to_class("D3", "DOOR")
-print("Added D3 to DOOR")
-client.manipulation.add_ind_to_class("D4", "DOOR")
-print("Added D4 to DOOR")
-client.manipulation.add_ind_to_class("D5", "DOOR")
-print("Added D5 to DOOR")
-client.manipulation.add_ind_to_class("D6", "DOOR")
-print("Added D6 to DOOR")
-client.manipulation.add_ind_to_class("D7", "DOOR")
-print("Added D7 to DOOR")
+def LoadMap():
+    """
+    Function used to load all the individuals with their properties in the topological map.
+    
+    Args:
+        None
+        
+    Returns:
+        None
+    """
+    
+    rooms = []
+    doors = []
+    corridors = []
 
-# DISJOINT OF THE INDIVIDUALS OF THE CLASSES
-client.manipulation.disj_inds_of_class("LOCATION")
-client.manipulation.disj_inds_of_class("DOOR")
+    client.manipulation.add_ind_to_class('E', 'LOCATION')
+    client.manipulation.add_objectprop_to_ind('isIn', 'Robot1', 'E')
+    print('Robot is in location E waiting to receive information.')
 
-# ADD PROPERTIES TO OBJECTS
-# Distinction between rooms and corridors
-client.manipulation.add_objectprop_to_ind("hasDoor", "R1", "D1")
-client.manipulation.add_objectprop_to_ind("hasDoor", "R2", "D2")
-client.manipulation.add_objectprop_to_ind("hasDoor", "R3", "D3")
-client.manipulation.add_objectprop_to_ind("hasDoor", "R4", "D4")
-client.manipulation.add_objectprop_to_ind("hasDoor", "C1", "D1")
-client.manipulation.add_objectprop_to_ind("hasDoor", "C1", "D2")
-client.manipulation.add_objectprop_to_ind("hasDoor", "C1", "D5")
-client.manipulation.add_objectprop_to_ind("hasDoor", "C1", "D7")
-client.manipulation.add_objectprop_to_ind("hasDoor", "C2", "D3")
-client.manipulation.add_objectprop_to_ind("hasDoor", "C2", "D4")
-client.manipulation.add_objectprop_to_ind("hasDoor", "C2", "D5")
-client.manipulation.add_objectprop_to_ind("hasDoor", "C2", "D6")
-client.manipulation.add_objectprop_to_ind("hasDoor", "E", "D6")
-client.manipulation.add_objectprop_to_ind("hasDoor", "E", "D7")
-print("All objects' properties were successfully added.")
+    # Ask the user how many corridors should be created
+    n_corridors = input('Insert the number of corridors: ')
 
-# Connections between locations
-client.manipulation.add_objectprop_to_ind("connectedTo", "R1", "C1")
-client.manipulation.add_objectprop_to_ind("connectedTo", "R2", "C1")
-client.manipulation.add_objectprop_to_ind("connectedTo", "C1", "C2")
-client.manipulation.add_objectprop_to_ind("connectedTo", "R3", "C2")
-client.manipulation.add_objectprop_to_ind("connectedTo", "R4", "C2")
-client.manipulation.add_objectprop_to_ind("connectedTo", "E", "C1")
-client.manipulation.add_objectprop_to_ind("connectedTo", "E", "C2")
-print("All connections between locations were successfully defined.")
+    while(n_corridors.isdigit() == False):
+        n_corridors = input('Wrong type, please enter a number: ')
+    n_corridors = int(n_corridors)
 
-# INITIALIZE ROBOT POSITION
-client.manipulation.add_objectprop_to_ind("isIn", "Robot1", "E")
-print("The robot is in its initial position: corridor E.")
+    room_index = 0
+    door_index = 0
+    # Add all the corridors
+    for i in range(0, n_corridors):
+        corridors.append('C'+str(i+1))
+        client.manipulation.add_ind_to_class(corridors[i], 'LOCATION')
+        # Ask the user how many rooms the i-th corridor has
+        n_rooms_corridor = input('How many rooms does corridor ' + corridors[i] + ' have? ')
+        while(n_rooms_corridor.isdigit() == False):
+            n_rooms_corridor = input('Wrong type, please enter a number: ')
+        # Add all the rooms and the correspondent doors
+        for j in range(0, int(n_rooms_corridor)):
+            rooms.append('R'+str(room_index+1))
+            doors.append('D'+str(door_index+1))
+            client.manipulation.add_ind_to_class(rooms[room_index], 'LOCATION')
+            client.manipulation.add_ind_to_class(doors[door_index], 'DOOR')
+            client.manipulation.add_dataprop_to_ind('visitedAt', rooms[room_index], 'Long', str(int(time.time())))
+            # Connect the i-th corridor with the j-th room
+            client.manipulation.add_objectprop_to_ind('hasDoor', rooms[room_index], doors[door_index])
+            client.manipulation.add_objectprop_to_ind('hasDoor', corridors[i], doors[door_index])
+            door_index += 1
+            room_index += 1
+        # Create a door connecting the corridor to room E
+        doors.append('D'+str(door_index+1))
+        client.manipulation.add_ind_to_class(doors[door_index], 'DOOR')
+        client.manipulation.add_objectprop_to_ind('hasDoor', 'E', doors[door_index])
+        client.manipulation.add_objectprop_to_ind('hasDoor', corridors[i], doors[door_index])
+        door_index += 1
+    # Add corridor E to the list of corridors
+    corridors.append('E')
+    n_corridors += 1
 
-# APPLY CHANGES AND QUERY
-client.utils.apply_buffered_changes()
-client.utils.sync_buffered_reasoner()
+    # Connect all the corridors with a door
+    for k in range(0, n_corridors-2):
+        doors.append('D'+str(door_index+1))
+        client.manipulation.add_ind_to_class(doors[door_index], 'DOOR')
+        client.manipulation.add_objectprop_to_ind('hasDoor', corridors[k], doors[door_index])
+        client.manipulation.add_objectprop_to_ind('hasDoor', corridors[k+1], doors[door_index])
+        door_index += 1
 
-# SAVE AND EXIT
-client.utils.save_ref_with_inferences(path + "topological_map.owl")
+    # Disjoint all the individuals
+    inds = rooms + corridors + doors
+    client.manipulation.disj_inds(inds)
+     
+    # Apply changes
+    client.utils.apply_buffered_changes()
+    client.utils.sync_buffered_reasoner()
