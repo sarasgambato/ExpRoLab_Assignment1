@@ -71,7 +71,7 @@
 <span class="sd">    :platform: ROS</span>
 <span class="sd">    :synopsis: Python module for the initialization and definition of the finite state machine.</span>
 <span class="sd">    </span>
-<span class="sd">.. moduleauthor:: Sara Sgambato s4648592@studneti.unige.it</span>
+<span class="sd">.. moduleauthor:: Sara Sgambato s4648592@studenti.unige.it</span>
 
 <span class="sd">This module defines the behavior of the Finite State Machine.</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -122,7 +122,7 @@
 <span class="sd">            userdata</span>
 
 <span class="sd">        Returns: </span>
-<span class="sd">            TRANS_INITIALIZED(String): transition to the next state </span>
+<span class="sd">            Str: &#39;everything_loaded&#39; once the map has been intialized</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">LoadMap</span><span class="p">()</span>
@@ -147,7 +147,7 @@
 <span class="sd">            userdata</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            None</span>
+<span class="sd">            Str: &#39;recharged&#39; once the battery is recharged</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">while</span> <span class="ow">not</span> <span class="n">rospy</span><span class="o">.</span><span class="n">is_shutdown</span><span class="p">():</span>
@@ -181,8 +181,7 @@
 <span class="sd">            userdata</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            TRANS_RECHARGING(String) if the battery is low, thus transitioning to the state RECHARGING</span>
-<span class="sd">            TRANS_DECIDED(String) is the battery is high, thus transitioning to the state GO_TO_RANDOM_POSE</span>
+<span class="sd">            Str: &#39;recharging&#39; if the battery is low, &#39;target_acquired&#39; otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># plan a random goal with some number of via points to simulate movement</span>
@@ -214,7 +213,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class related to the state that check the location the robot is in.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">helper</span><span class="p">,</span> <span class="n">sm_helper</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_helper</span> <span class="o">=</span> <span class="n">helper</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sm_helper</span> <span class="o">=</span> <span class="n">sm_helper</span>
@@ -231,8 +230,7 @@
 <span class="sd">            userdata</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            TRANS_RECHARGING(String) if the battery is low, thus transitioning to the state RECHARGING</span>
-<span class="sd">            TRANS_WENT_RANDOM_POSE(String) if the battery is high, thus transitioning to the state DECIDE_LOCATION</span>
+<span class="sd">            Str: &#39;recharging&#39; if the battery is low, &#39;went_to_random_pose&#39; otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># send the goal to the controller and check that the via points are reached</span>

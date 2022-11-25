@@ -87,13 +87,13 @@
 <span class="n">LOG_TAG</span> <span class="o">=</span> <span class="n">anm</span><span class="o">.</span><span class="n">NODE_ROBOT_STATE</span>
 
 <span class="c1"># constant value representing the battery usage time</span>
-<span class="n">BATTERY_TIME</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">BATTERY_TIME</span> <span class="o">=</span> <span class="mi">120</span>
 
 <div class="viewcode-block" id="RobotState"><a class="viewcode-back" href="../../index.html#scripts.robot_states.RobotState">[docs]</a><span class="k">class</span> <span class="nc">RobotState</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class implementing the services or the robot position and the publisher for the battery level.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Initialise this node</span>
         <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="n">anm</span><span class="o">.</span><span class="n">NODE_ROBOT_STATE</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="n">rospy</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>

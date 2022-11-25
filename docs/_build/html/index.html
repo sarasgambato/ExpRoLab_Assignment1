@@ -76,9 +76,10 @@
 </li>
 <li><a class="reference internal" href="#scripts.helper.BehaviorHelper"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper</span></code></a><ul>
 <li><a class="reference internal" href="#scripts.helper.BehaviorHelper.check_location"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper.check_location()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.helper.BehaviorHelper.clean_list"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper.clean_list()</span></code></a></li>
 <li><a class="reference internal" href="#scripts.helper.BehaviorHelper.decide_location"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper.decide_location()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.helper.BehaviorHelper.get_queried"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper.get_queried()</span></code></a></li>
 <li><a class="reference internal" href="#scripts.helper.BehaviorHelper.get_timestamp"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper.get_timestamp()</span></code></a></li>
-<li><a class="reference internal" href="#scripts.helper.BehaviorHelper.get_urgencies"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper.get_urgencies()</span></code></a></li>
 <li><a class="reference internal" href="#scripts.helper.BehaviorHelper.reason_reach"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper.reason_reach()</span></code></a></li>
 <li><a class="reference internal" href="#scripts.helper.BehaviorHelper.reason_urg"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper.reason_urg()</span></code></a></li>
 <li><a class="reference internal" href="#scripts.helper.BehaviorHelper.recharge"><code class="docutils literal notranslate"><span class="pre">BehaviorHelper.recharge()</span></code></a></li>
@@ -164,8 +165,10 @@ It makes the robot go to the wanted location and checks it.</p>
 <dd class="field-odd"><p><strong>userdata</strong> -- </p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>TRANS_RECHARGING(String) if the battery is low, thus transitioning to the state RECHARGING
-TRANS_WENT_RANDOM_POSE(String) if the battery is high, thus transitioning to the state DECIDE_LOCATION</p>
+<dd class="field-even"><p>'recharging' if the battery is low, 'went_to_random_pose' otherwise</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -186,8 +189,10 @@ It decides in which location to go next based on some criteria.</p>
 <dd class="field-odd"><p><strong>userdata</strong> -- </p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>TRANS_RECHARGING(String) if the battery is low, thus transitioning to the state RECHARGING
-TRANS_DECIDED(String) is the battery is high, thus transitioning to the state GO_TO_RANDOM_POSE</p>
+<dd class="field-even"><p>'recharging' if the battery is low, 'target_acquired' otherwise</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -208,10 +213,10 @@ It loads the topological map and transitions to the state NORMAL.</p>
 <dd class="field-odd"><p><strong>userdata</strong> -- </p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>transition to the next state</p>
+<dd class="field-even"><p>'everything_loaded' once the map has been intialized</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>TRANS_INITIALIZED(String)</p>
+<dd class="field-odd"><p>Str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -232,7 +237,10 @@ It recharges the battery of the robot and transitions to the state NORMAL.</p>
 <dd class="field-odd"><p><strong>userdata</strong> -- </p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>'recharged' once the battery is recharged</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -282,7 +290,7 @@ one that manages the synchronization with subscribers and action servers and one
 <dd class="field-even"><p>result of the action server, if any, 'None' otherwise</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>_results(String)</p>
+<dd class="field-odd"><p>_Str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -354,7 +362,7 @@ one that manages the synchronization with subscribers and action servers and one
 <dl class="py class">
 <dt class="sig sig-object py" id="scripts.helper.BehaviorHelper">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.helper.</span></span><span class="sig-name descname"><span class="pre">BehaviorHelper</span></span><a class="reference internal" href="_modules/scripts/helper.html#BehaviorHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.BehaviorHelper" title="Permalink to this definition"></a></dt>
-<dd><p>Class that implementes some function useful to the fsm to take decisions.</p>
+<dd><p>Class that implements some function useful to the fsm to take decisions.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.helper.BehaviorHelper.check_location">
 <span class="sig-name descname"><span class="pre">check_location</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#BehaviorHelper.check_location"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.BehaviorHelper.check_location" title="Permalink to this definition"></a></dt>
@@ -362,12 +370,33 @@ one that manages the synchronization with subscribers and action servers and one
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>position</strong> (<em>String</em>) -- current position of the robot, which has to be updated</p></li>
-<li><p><strong>target</strong> (<em>String</em>) -- location with which to update the robot position</p></li>
+<li><p><strong>position</strong> (<em>Str</em>) -- current position of the robot, which has to be updated</p></li>
+<li><p><strong>target</strong> (<em>Str</em>) -- location with which to update the robot position</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.helper.BehaviorHelper.clean_list">
+<span class="sig-name descname"><span class="pre">clean_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list_</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#BehaviorHelper.clean_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.BehaviorHelper.clean_list" title="Permalink to this definition"></a></dt>
+<dd><p>Function to clean a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>Int</em>) -- value specifying how to clean the string, given that timestamps
+and strings indicating locations have a different length</p></li>
+<li><p><strong>list</strong> (<em>Str</em>) -- list that has to be cleaned</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cleaned list</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list_(Str)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -382,10 +411,27 @@ one that manages the synchronization with subscribers and action servers and one
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>current position of the robot
-target(String): string representing the location in which the robot will go to</p>
+target(Str): string representing the location in which the robot will go to</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>position(String)</p>
+<dd class="field-odd"><p>position(Str)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.helper.BehaviorHelper.get_queried">
+<span class="sig-name descname"><span class="pre">get_queried</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#BehaviorHelper.get_queried"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.BehaviorHelper.get_queried" title="Permalink to this definition"></a></dt>
+<dd><p>Function to get the queried object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>Str</em>) -- string representing the object we want to query</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of queried objects</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -397,32 +443,15 @@ target(String): string representing the location in which the robot will go to</
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataprop</strong> (<em>String</em>) -- string representing the property for which we want the timestamp</p></li>
-<li><p><strong>ind</strong> (<em>String</em>) -- string representing the individual of interest</p></li>
+<li><p><strong>dataprop</strong> (<em>Str</em>) -- string representing the property for which we want the timestamp</p></li>
+<li><p><strong>ind</strong> (<em>Str</em>) -- string representing the individual of interest</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>cleaned timestamp of the property of the individual</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>timestamp(String)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="scripts.helper.BehaviorHelper.get_urgencies">
-<span class="sig-name descname"><span class="pre">get_urgencies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reachable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#BehaviorHelper.get_urgencies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.BehaviorHelper.get_urgencies" title="Permalink to this definition"></a></dt>
-<dd><p>Function to gt the reachable urgent locations.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>reachable</strong> (<em>List</em>) -- list of all the reachable location</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>list of all the reachable locations that are urgent</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>reachable_urg(List)</p>
+<dd class="field-odd"><p>Str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -434,15 +463,15 @@ target(String): string representing the location in which the robot will go to</
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>reachable</strong> (<em>List</em>) -- list of all the reachable locations</p></li>
-<li><p><strong>position</strong> (<em>String</em>) -- string representing the current pose of the robot</p></li>
+<li><p><strong>reachable</strong> (<em>Str</em>) -- list of all the reachable locations</p></li>
+<li><p><strong>position</strong> (<em>Str</em>) -- string representing the current pose of the robot</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>string representing the location in which the robot will go to</p>
+<dd class="field-even"><p>the location in which the robot will go next</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>target(String)</p>
+<dd class="field-odd"><p>Str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -454,13 +483,13 @@ target(String): string representing the location in which the robot will go to</
 The robot goes in the most urgent location, which is the one that has not been visited for the longest time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>reachable_urg</strong> (<em>List</em>) -- list of all the reachable locations that are urgent</p>
+<dd class="field-odd"><p><strong>reachable_urg</strong> (<em>Str</em>) -- list of all the reachable locations that are urgent</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>string representing the location in which the robot will go to</p>
+<dd class="field-even"><p>the location in which the robot will go next</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>target(String)</p>
+<dd class="field-odd"><p>Str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -472,7 +501,7 @@ The robot goes in the most urgent location, which is the one that has not been v
 if room E is not in the reachable locations, then choose randomly in which location to go next and repeat until room E is reachable.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>position</strong> (<em>String</em>) -- current position of the robot, which whill be updated with location 'E'</p>
+<dd class="field-odd"><p><strong>position</strong> (<em>Str</em>) -- current position of the robot, which whill be updated with location 'E'</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>None</p>

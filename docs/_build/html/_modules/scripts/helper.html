@@ -71,7 +71,7 @@
 <span class="sd">    :platform: ROS</span>
 <span class="sd">    :synopsis: Python module used to simplify the fsm code.</span>
 <span class="sd">    </span>
-<span class="sd">.. moduleauthor:: Sara Sgambato s4648592@studneti.unige.it</span>
+<span class="sd">.. moduleauthor:: Sara Sgambato s4648592@studenti.unige.it</span>
 
 <span class="sd">This module implements three classes representing three different helpers: one to simplify the implementation of a client for ROS action servers, </span>
 <span class="sd">one that manages the synchronization with subscribers and action servers and one to help the fsm machine taking decisions.</span>
@@ -135,7 +135,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;SENDING GOALS&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning send a new goal, cancel the current request first!&quot;</span><span class="p">)</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: to send a new goal cancel the current request first!&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ActionClientHelper.cancel_goals"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.cancel_goals">[docs]</a>    <span class="k">def</span> <span class="nf">cancel_goals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -154,7 +154,7 @@
             <span class="c1"># Reset the client&#39;s state</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reset_client_states</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning cannot cancel a not running service!&quot;</span><span class="p">)</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: cannot cancel a not running service!&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ActionClientHelper.reset_client_states"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.reset_client_states">[docs]</a>    <span class="k">def</span> <span class="nf">reset_client_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -176,7 +176,7 @@
 <span class="sd">        Function called when the action server has to send a feedback to the client.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            feedback(String): feedback message to be sent to the client</span>
+<span class="sd">            feedback(Str): feedback message to be sent to the client</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
@@ -184,11 +184,11 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_mutex</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Eventually, call the method provided by the node that uses this action client to manage a feedback</span>
+            <span class="c1"># Call the method provided by the node that uses this action client to manage a feedback</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_external_feedback_cb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_external_feedback_cb</span><span class="p">(</span><span class="n">feedback</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="c1"># Realise the mutex to (eventually) unblock ROS-based thread waiting on the same mutex</span>
+            <span class="c1"># Realise the mutex to unblock ROS-based thread waiting on the same mutex</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_done_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
@@ -196,8 +196,8 @@
 <span class="sd">        Function called when the action server has finished its computation.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            status(String):</span>
-<span class="sd">            results(String):</span>
+<span class="sd">            status(Str):</span>
+<span class="sd">            results(Str):</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
@@ -209,7 +209,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="n">results</span>
-            <span class="c1"># Eventually, call the method provided by the node that uses this action client to manage a result</span>
+            <span class="c1"># Call the method provided by the node that uses this action client to manage a result</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_external_done_cb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_external_done_cb</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
@@ -249,7 +249,7 @@
 <span class="sd">            None</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            _results(String): result of the action server, if any, &#39;None&#39; otherwise</span>
+<span class="sd">            _Str: result of the action server, if any, &#39;None&#39; otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span><span class="p">:</span>
@@ -266,7 +266,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Create a shared mutex to synchronize action clients and subscribers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mutex</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
-        <span class="c1"># Set the initial state involving the `self._battery_low`</span>
+        <span class="c1"># Set the initial state</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_states</span><span class="p">()</span>
         <span class="c1"># Define the callback associated with the battery low ROS subscribers</span>
         <span class="n">rospy</span><span class="o">.</span><span class="n">Subscriber</span><span class="p">(</span><span class="n">anm</span><span class="o">.</span><span class="n">TOPIC_BATTERY_LOW</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_battery_callback</span><span class="p">)</span>
@@ -299,7 +299,7 @@
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Acquire the mutex to assure the synchronization with the other subscribers and action clients (this assure data consistency).</span>
+        <span class="c1"># Acquire the mutex to assure the synchronization with the other subscribers and action clients</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Get the battery level and set the relative state variable encoded in this class</span>
@@ -333,7 +333,7 @@
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># Eventually, wait for the server to be initialised</span>
+        <span class="c1"># Wait for the server to be initialised</span>
         <span class="n">rospy</span><span class="o">.</span><span class="n">wait_for_service</span><span class="p">(</span><span class="n">anm</span><span class="o">.</span><span class="n">SERVER_SET_POSE</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Call the service and set the current robot position</span>
@@ -345,71 +345,107 @@
 
 <div class="viewcode-block" id="BehaviorHelper"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper">[docs]</a><span class="k">class</span> <span class="nc">BehaviorHelper</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class that implementes some function useful to the fsm to take decisions.</span>
+<span class="sd">    Class that implements some function useful to the fsm to take decisions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">corridors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">]</span>
+        <span class="c1"># If the main individual has to be changed, change this value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">robot</span> <span class="o">=</span> <span class="s1">&#39;Robot1&#39;</span>
+        <span class="c1"># If the recharging room has to be changed, change this value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">recharging_room</span> <span class="o">=</span> <span class="s1">&#39;E&#39;</span>
+
+<div class="viewcode-block" id="BehaviorHelper.clean_list"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.clean_list">[docs]</a>    <span class="k">def</span> <span class="nf">clean_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">list_</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to clean a list.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            type(Int): value specifying how to clean the string, given that timestamps </span>
+<span class="sd">                              and strings indicating locations have a different length</span>
+<span class="sd">            list_(Str): list that has to be cleaned</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list_(Str): cleaned list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">list_</span> <span class="o">=</span> <span class="n">list_</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">32</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">list_</span><span class="p">)):</span>
+                    <span class="n">list_</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">list_</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">32</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">list_</span> <span class="o">=</span> <span class="n">list_</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">11</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">list_</span>  </div>
+
+<div class="viewcode-block" id="BehaviorHelper.get_queried"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.get_queried">[docs]</a>    <span class="k">def</span> <span class="nf">get_queried</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Function to get the queried object.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            obj(Str): string representing the object we want to query</span>
+<span class="sd">            </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Str: list of queried objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">obj</span> <span class="o">==</span> <span class="s1">&#39;position&#39;</span><span class="p">:</span>
+            <span class="n">list_</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_list</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">list_</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">obj</span> <span class="o">==</span> <span class="s1">&#39;reachable&#39;</span><span class="p">:</span>
+            <span class="n">list_</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;canReach&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="p">)</span>
+            <span class="n">list_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_list</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">list_</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">list_</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">list_</span> <span class="o">=</span> <span class="p">[</span><span class="n">list_</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">list_</span>
+
+        <span class="k">if</span> <span class="n">obj</span> <span class="o">==</span> <span class="s1">&#39;urgencies&#39;</span><span class="p">:</span>
+            <span class="n">list_</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">ind_b2_class</span><span class="p">(</span><span class="s1">&#39;URGENT&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_list</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">list_</span><span class="p">)</span> 
+
+        <span class="k">if</span> <span class="n">obj</span> <span class="o">==</span> <span class="s1">&#39;corridors&#39;</span><span class="p">:</span>
+            <span class="n">list_</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">ind_b2_class</span><span class="p">(</span><span class="s1">&#39;CORRIDOR&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_list</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">list_</span><span class="p">)</span> </div>
+            
 
 <div class="viewcode-block" id="BehaviorHelper.get_timestamp"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.get_timestamp">[docs]</a>    <span class="k">def</span> <span class="nf">get_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataprop</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to get the timestamp for the &#39;dataprop&#39; property of the &#39;ind&#39; individual.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            dataprop(String): string representing the property for which we want the timestamp</span>
-<span class="sd">            ind(String): string representing the individual of interest</span>
+<span class="sd">            dataprop(Str): string representing the property for which we want the timestamp</span>
+<span class="sd">            ind(Str): string representing the individual of interest</span>
 <span class="sd">            </span>
 <span class="sd">        Return:</span>
-<span class="sd">            timestamp(String): cleaned timestamp of the property of the individual</span>
+<span class="sd">            Str: cleaned timestamp of the property of the individual</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="n">dataprop</span><span class="p">,</span> <span class="n">ind</span><span class="p">)</span>
-        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">11</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">timestamp</span></div>
-
-<div class="viewcode-block" id="BehaviorHelper.get_urgencies"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.get_urgencies">[docs]</a>    <span class="k">def</span> <span class="nf">get_urgencies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reachable</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Function to gt the reachable urgent locations.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            reachable(List): list of all the reachable location</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            reachable_urg(List): list of all the reachable locations that are urgent</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">urgencies</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">ind_b2_class</span><span class="p">(</span><span class="s1">&#39;URGENT&#39;</span><span class="p">)</span>
-        <span class="n">reachable_urg</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">urgencies</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">reachable</span><span class="p">))</span>
-        
-        <span class="k">return</span> <span class="n">reachable_urg</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_list</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="BehaviorHelper.reason_reach"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.reason_reach">[docs]</a>    <span class="k">def</span> <span class="nf">reason_reach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reachable</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to decide in which location to go next. It is called when there are no urgent locations.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            reachable(List): list of all the reachable locations</span>
-<span class="sd">            position(String): string representing the current pose of the robot</span>
+<span class="sd">            reachable(Str): list of all the reachable locations</span>
+<span class="sd">            position(Str): string representing the current pose of the robot</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            target(String): string representing the location in which the robot will go to</span>
+<span class="sd">            Str: the location in which the robot will go next</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># if there is no urgency, continuosly check the corridors</span>
-        <span class="k">if</span> <span class="n">position</span> <span class="o">==</span> <span class="s1">&#39;C1&#39;</span><span class="p">:</span>
-                <span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;C2&#39;</span>
-        <span class="k">elif</span> <span class="n">position</span> <span class="o">==</span> <span class="s1">&#39;C2&#39;</span><span class="p">:</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;C1&#39;</span>
-        <span class="c1"># at the start of the simulation and whenever the robot needs to recharge, the position will be equal to E and</span>
-        <span class="c1"># the reachable locations will be two, i.e. C1 and C2; also, when the robot is in a room, the reachable location will be one,</span>
-        <span class="c1"># i.e. C1 or C2, hence the need to manage the reasoning this way</span>
+        <span class="n">corridors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queried</span><span class="p">(</span><span class="s1">&#39;corridors&#39;</span><span class="p">)</span>
+        <span class="c1"># if there is no urgency, and the robot is already in a corridor, continuosly check the corridors</span>
+        <span class="k">if</span> <span class="n">position</span> <span class="ow">in</span> <span class="n">corridors</span><span class="p">:</span>
+            <span class="n">corridors</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+            <span class="c1"># I assume that there is more then one corridor</span>
+            <span class="k">return</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">corridors</span><span class="p">)</span>
+        <span class="c1"># if there is no urgency, and the robot is in a room, there will be only one reachable location</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reachable</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">target</span> <span class="o">=</span> <span class="n">reachable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">target</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">reachable</span><span class="p">)</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="mi">32</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">target</span></div>
+            <span class="k">return</span> <span class="n">reachable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="BehaviorHelper.reason_urg"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.reason_urg">[docs]</a>    <span class="k">def</span> <span class="nf">reason_urg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reachable_urg</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -417,26 +453,22 @@
 <span class="sd">        The robot goes in the most urgent location, which is the one that has not been visited for the longest time.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            reachable_urg(List): list of all the reachable locations that are urgent</span>
+<span class="sd">            reachable_urg(Str): list of all the reachable locations that are urgent</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            target(String): string representing the location in which the robot will go to</span>
+<span class="sd">            Str: the location in which the robot will go next</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># if there is only one urgent location, go there</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reachable_urg</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="n">reachable_urg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="p">[</span><span class="mi">32</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">reachable_urg</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="c1"># else choose based on the timestamp</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">oldest</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+            <span class="n">visits</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">reachable_urg</span><span class="p">:</span>
-                <span class="n">loc</span> <span class="o">=</span> <span class="n">loc</span><span class="p">[</span><span class="mi">32</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="n">last_visit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">(</span><span class="s1">&#39;visitedAt&#39;</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">last_visit</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">oldest</span><span class="p">:</span>
-                    <span class="n">oldest</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">last_visit</span><span class="p">)</span>
-                    <span class="n">target</span> <span class="o">=</span> <span class="n">loc</span>
-        <span class="k">return</span> <span class="n">target</span></div>
+                <span class="n">visits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">last_visit</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">reachable_urg</span><span class="p">[</span><span class="n">visits</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">visits</span><span class="p">))]</span></div>
 
 <div class="viewcode-block" id="BehaviorHelper.decide_location"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.decide_location">[docs]</a>    <span class="k">def</span> <span class="nf">decide_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -446,15 +478,17 @@
 <span class="sd">            None</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            position(String): current position of the robot</span>
-<span class="sd">            target(String): string representing the location in which the robot will go to</span>
+<span class="sd">            position(Str): current position of the robot</span>
+<span class="sd">            target(Str): string representing the location in which the robot will go to</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">position</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="s1">&#39;Robot1&#39;</span><span class="p">)</span>
-        <span class="n">reachable</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;canReach&#39;</span><span class="p">,</span> <span class="s1">&#39;Robot1&#39;</span><span class="p">)</span>
-        <span class="n">position</span> <span class="o">=</span> <span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">32</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I am in location &#39;</span> <span class="o">+</span> <span class="n">position</span><span class="p">)</span>
-        <span class="n">reachable_urg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_urgencies</span><span class="p">(</span><span class="n">reachable</span><span class="p">)</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queried</span><span class="p">(</span><span class="s1">&#39;position&#39;</span><span class="p">)</span>
+        <span class="n">reachable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queried</span><span class="p">(</span><span class="s1">&#39;reachable&#39;</span><span class="p">)</span>
+        <span class="n">urgencies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queried</span><span class="p">(</span><span class="s1">&#39;urgencies&#39;</span><span class="p">)</span>
+        <span class="n">reachable_urg</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">urgencies</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">reachable</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Current position: &#39;</span> <span class="o">+</span> <span class="n">position</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reachable locations: [&#39;</span><span class="o">+</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reachable</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;]&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Urgent: [&#39;</span><span class="o">+</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reachable_urg</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;]&#39;</span><span class="p">)</span>
 
         <span class="c1"># if there are no urgent locations to check, reason where to go next in a certain way</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">reachable_urg</span> <span class="o">==</span> <span class="p">[]):</span>
@@ -471,19 +505,19 @@
 <span class="sd">        Function to reach and check the location that the robot has to go to.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            position(String): current position of the robot, which has to be updated</span>
-<span class="sd">            target(String): location with which to update the robot position</span>
+<span class="sd">            position(Str): current position of the robot, which has to be updated</span>
+<span class="sd">            target(Str): location with which to update the robot position</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="s1">&#39;Robot1&#39;</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
-        <span class="n">last_change</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="s1">&#39;Robot1&#39;</span><span class="p">)</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+        <span class="n">last_change</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="p">)</span>
         <span class="n">now</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_dataprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="s1">&#39;Robot1&#39;</span><span class="p">,</span> <span class="s1">&#39;Long&#39;</span><span class="p">,</span> <span class="n">now</span><span class="p">,</span> <span class="n">last_change</span><span class="p">)</span>
-        <span class="c1"># the &#39;visitedAt&#39; property of the corridors has not been considered, given that they will never be considered urgent</span>
-        <span class="k">if</span> <span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">corridors</span><span class="p">:</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_dataprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;now&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="p">,</span> <span class="s1">&#39;Long&#39;</span><span class="p">,</span> <span class="n">now</span><span class="p">,</span> <span class="n">last_change</span><span class="p">)</span>
+        <span class="n">corridors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queried</span><span class="p">(</span><span class="s1">&#39;corridors&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">corridors</span><span class="p">:</span> <span class="c1"># the &#39;visitedAt&#39; property of the corridors has not been considered, given that they will never be urgent</span>
             <span class="n">last_visit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timestamp</span><span class="p">(</span><span class="s1">&#39;visitedAt&#39;</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
             <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_dataprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;visitedAt&#39;</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="s1">&#39;Long&#39;</span><span class="p">,</span> <span class="n">now</span><span class="p">,</span> <span class="n">last_visit</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reached target...mmh...everything clear&#39;</span><span class="p">)</span>
@@ -496,41 +530,39 @@
 <span class="sd">        if room E is not in the reachable locations, then choose randomly in which location to go next and repeat until room E is reachable.</span>
 <span class="sd">        </span>
 <span class="sd">        Args: </span>
-<span class="sd">            position(String): current position of the robot, which whill be updated with location &#39;E&#39;</span>
+<span class="sd">            position(Str): current position of the robot, which whill be updated with location &#39;E&#39;</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I need to recharge, going to room E&#39;</span><span class="p">)</span>
-        <span class="n">reached</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;I need to recharge, going to room &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">recharging_room</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">position</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">recharging_room</span><span class="p">:</span>
+            <span class="n">reached</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reached</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">while</span><span class="p">(</span><span class="n">reached</span> <span class="o">==</span> <span class="kc">False</span><span class="p">):</span>
-            <span class="n">clean_list</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">reachable</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;canReach&#39;</span><span class="p">,</span> <span class="s1">&#39;Robot1&#39;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">reachable</span><span class="p">:</span>
-                <span class="n">loc</span> <span class="o">=</span> <span class="n">loc</span><span class="p">[</span><span class="mi">32</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">clean_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
-            <span class="c1"># If froom E is reachable, go there</span>
-            <span class="k">if</span> <span class="s1">&#39;E&#39;</span> <span class="ow">in</span> <span class="n">clean_list</span><span class="p">:</span>
-                <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="s1">&#39;Robot1&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>       
-                <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">apply_buffered_changes</span><span class="p">()</span>
-                <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span>
+            <span class="n">reachable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queried</span><span class="p">(</span><span class="s1">&#39;reachable&#39;</span><span class="p">)</span>
+            <span class="c1"># If room E is reachable, go there</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">recharging_room</span> <span class="ow">in</span> <span class="n">reachable</span><span class="p">:</span>
                 <span class="n">reached</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="c1"># Else choose randomly and repeat</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">clean_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="n">choice</span> <span class="o">=</span> <span class="n">clean_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reachable</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">choice</span> <span class="o">=</span> <span class="n">reachable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">choice</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">clean_list</span><span class="p">)</span>
-                <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="s1">&#39;Robot1&#39;</span><span class="p">,</span> <span class="n">choice</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
-                <span class="c1"># Update the current position</span>
-                <span class="n">position</span> <span class="o">=</span> <span class="n">choice</span>       
+                    <span class="n">choice</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">reachable</span><span class="p">)</span>
+                <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="p">,</span> <span class="n">choice</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
                 <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">apply_buffered_changes</span><span class="p">()</span>
                 <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span>
+                <span class="c1"># Update the current position</span>
+                <span class="n">position</span> <span class="o">=</span> <span class="n">choice</span>       
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Almost there...I am in location &#39;</span> <span class="o">+</span> <span class="n">position</span> <span class="o">+</span> <span class="s1">&#39; now&#39;</span><span class="p">)</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reached room E, recharging...&#39;</span><span class="p">)</span></div></div>
-        
-
+        <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recharging_room</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>       
+        <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">apply_buffered_changes</span><span class="p">()</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reached room &#39;</span> <span class="o">+</span>  <span class="bp">self</span><span class="o">.</span><span class="n">recharging_room</span> <span class="o">+</span> <span class="s1">&#39;, recharging...&#39;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

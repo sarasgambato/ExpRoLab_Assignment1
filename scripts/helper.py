@@ -16,7 +16,7 @@ import random
 import time
 from actionlib import SimpleActionClient
 from threading import Lock
-from armor_client import ArmorClient
+from armor_api.armor_client import ArmorClient
 from Assignment_1 import architecture_name_mapper as anm
 from std_msgs.msg import Bool
 from Assignment_1.msg import PlanAction, ControlAction
