@@ -1,4 +1,4 @@
-# ExpRoLab Assignment1
+# ExpRoLab Assignment 1 
 
 ## Introduction
 The aim of this assignment consists in the development of an algorithm to control the behavior of a robot in a indoor environment with doors and corridors for surveillance purposes. The robot’s objective is to visit the different locations of the environment and stay there for some time.
@@ -19,12 +19,12 @@ git clone https://github.com/buoncubi/topological_map
 git clone https://github.com/sarasgambato/ExpRoLab_Assignment1
 ```
 ### Using roslaunch
-In order to make the code function correctly, the user should run the following line in the shell to install `xterm`, if not already installed:
+In order to make the code function correctly, the user should run the following lines in the shell to install `xterm`, if not already installed:
 ```sh
 sudo apt-get update
 sudp apt-get -y install xterm
 ```
-Then, after having done `catkin_make` inside the ROS workspace, the user can run the project by running the following line in the shell:
+Then, after having done `catkin_make` inside the ROS workspace, the user can run the project by using `roslaunch`:
 ```sh
 roslaunch Assignment_1 assignment_launch.launch
 ```
