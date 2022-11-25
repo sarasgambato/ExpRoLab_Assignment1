@@ -14,7 +14,7 @@ import rospy
 import random
 import smach_ros
 from smach import StateMachine, State
-from load_ontology2 import LoadMap
+from load_ontology import LoadMap
 from Assignment_1 import architecture_name_mapper as anm
 from helper import InterfaceHelper, BehaviorHelper
 from Assignment_1.msg import Point, ControlGoal, PlanGoal
@@ -56,7 +56,7 @@ class LoadOntology(State):
             userdata
 
         Returns: 
-            TRANS_INITIALIZED(String): transition to the next state 
+            Str: 'everything_loaded' once the map has been intialized
         """
 
         LoadMap()
@@ -81,7 +81,7 @@ class Recharging(State):
             userdata
             
         Returns:
-            None
+            Str: 'recharged' once the battery is recharged
         """
 
         while not rospy.is_shutdown():
@@ -115,8 +115,7 @@ class DecideTarget(State):
             userdata
 
         Returns:
-            TRANS_RECHARGING(String) if the battery is low, thus transitioning to the state RECHARGING
-            TRANS_DECIDED(String) is the battery is high, thus transitioning to the state GO_TO_RANDOM_POSE
+            Str: 'recharging' if the battery is low, 'target_acquired' otherwise
         """
 
         # plan a random goal with some number of via points to simulate movement
@@ -165,8 +164,7 @@ class CheckTarget(State):
             userdata
             
         Returns:
-            TRANS_RECHARGING(String) if the battery is low, thus transitioning to the state RECHARGING
-            TRANS_WENT_RANDOM_POSE(String) if the battery is high, thus transitioning to the state DECIDE_LOCATION
+            Str: 'recharging' if the battery is low, 'went_to_random_pose' otherwise
         """
 
         # send the goal to the controller and check that the via points are reached

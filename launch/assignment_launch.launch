@@ -10,10 +10,7 @@
 
 
     <!-- Run the architecture's component. -->
-
     <rosparam param="state/initial_pose"> [0.0,  0.0] </rosparam>
-
-    <rosparam param="config/user_pose"> [5.0,  5.0] </rosparam>
     <rosparam param="config/environment_size"> [10.0, 10.0] </rosparam>
 
     <rosparam param="test/random_plan_points"> [2, 8] </rosparam>

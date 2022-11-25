@@ -69,7 +69,7 @@ class ActionClientHelper:
             self._results = None
             print("SENDING GOALS")
         else:
-            print("Warning send a new goal, cancel the current request first!")
+            print("Warning: to send a new goal cancel the current request first!")
 
     def cancel_goals(self):
         """
@@ -88,7 +88,7 @@ class ActionClientHelper:
             # Reset the client's state
             self.reset_client_states()
         else:
-            print("Warning cannot cancel a not running service!")
+            print("Warning: cannot cancel a not running service!")
 
     def reset_client_states(self):
         """
@@ -110,7 +110,7 @@ class ActionClientHelper:
         Function called when the action server has to send a feedback to the client.
         
         Args:
-            feedback(String): feedback message to be sent to the client
+            feedback(Str): feedback message to be sent to the client
             
         Returns:
             None
@@ -118,11 +118,11 @@ class ActionClientHelper:
 
         self._mutex.acquire()
         try:
-            # Eventually, call the method provided by the node that uses this action client to manage a feedback
+            # Call the method provided by the node that uses this action client to manage a feedback
             if self._external_feedback_cb is not None:
                 self._external_feedback_cb(feedback)
         finally:
-            # Realise the mutex to (eventually) unblock ROS-based thread waiting on the same mutex
+            # Realise the mutex to unblock ROS-based thread waiting on the same mutex
             self._mutex.release()
 
     def _done_callback(self, status, results):
@@ -130,8 +130,8 @@ class ActionClientHelper:
         Function called when the action server has finished its computation.
         
         Args:
-            status(String):
-            results(String):
+            status(Str):
+            results(Str):
             
         Returns:
             None
@@ -143,7 +143,7 @@ class ActionClientHelper:
             self._is_running = False
             self._is_done = True
             self._results = results
-            # Eventually, call the method provided by the node that uses this action client to manage a result
+            # Call the method provided by the node that uses this action client to manage a result
             if self._external_done_cb is not None:
                 self._external_done_cb(status, results)
         finally:
@@ -183,7 +183,7 @@ class ActionClientHelper:
             None
             
         Returns:
-            _results(String): result of the action server, if any, 'None' otherwise
+            _Str: result of the action server, if any, 'None' otherwise
         """
 
         if self._is_done:
@@ -200,7 +200,7 @@ class InterfaceHelper:
     def __init__(self):
         # Create a shared mutex to synchronize action clients and subscribers
         self.mutex = Lock()
-        # Set the initial state involving the `self._battery_low`
+        # Set the initial state
         self.reset_states()
         # Define the callback associated with the battery low ROS subscribers
         rospy.Subscriber(anm.TOPIC_BATTERY_LOW, Bool, self._battery_callback)
@@ -233,7 +233,7 @@ class InterfaceHelper:
             None
         """
 
-        # Acquire the mutex to assure the synchronization with the other subscribers and action clients (this assure data consistency).
+        # Acquire the mutex to assure the synchronization with the other subscribers and action clients
         self.mutex.acquire()
         try:
             # Get the battery level and set the relative state variable encoded in this class
@@ -267,7 +267,7 @@ class InterfaceHelper:
             None
         """
 
-        # Eventually, wait for the server to be initialised
+        # Wait for the server to be initialised
         rospy.wait_for_service(anm.SERVER_SET_POSE)
         try:
             # Call the service and set the current robot position
@@ -283,7 +283,10 @@ class BehaviorHelper:
     """
 
     def __init__(self):
-        self.corridors = 'CORRIDORS'
+        # If the main individual has to be changed, change this value
+        self.robot = 'Robot1'
+        # If the recharging room has to be changed, change this value
+        self.recharging_room = 'E'
 
     def clean_list(self, type, list_):
         """
@@ -292,10 +295,10 @@ class BehaviorHelper:
         Args:
             type(Int): value specifying how to clean the string, given that timestamps 
                               and strings indicating locations have a different length
-            list_(List): list that has to be cleaned
+            list_(Str): list that has to be cleaned
 
         Returns:
-            list_(List): cleaned list
+            list_(Str): cleaned list
         """
 
         if type == 1:
@@ -308,71 +311,75 @@ class BehaviorHelper:
         if type == 2:
             list_ = list_[0][1:-11]
 
-        return list_    
+        return list_  
+
+    def get_queried(self, obj):
+        """
+        Function to get the queried object.
+        
+        Args:
+            obj(Str): string representing the object we want to query
+            
+        Returns:
+            Str: list of queried objects
+        """
+
+        if obj == 'position':
+            list_ = client.query.objectprop_b2_ind('isIn', self.robot)
+            return self.clean_list(1, list_)
+
+        if obj == 'reachable':
+            list_ = client.query.objectprop_b2_ind('canReach', self.robot)
+            list_ = self.clean_list(1, list_)
+            if isinstance(list_, str):
+                list_ = [list_]
+            return list_
+
+        if obj == 'urgencies':
+            list_ = client.query.ind_b2_class('URGENT')
+            return self.clean_list(1, list_) 
+
+        if obj == 'corridors':
+            list_ = client.query.ind_b2_class('CORRIDOR')
+            return self.clean_list(1, list_) 
+            
 
     def get_timestamp(self, dataprop, ind):
         """
         Function to get the timestamp for the 'dataprop' property of the 'ind' individual.
         
         Args:
-            dataprop(String): string representing the property for which we want the timestamp
-            ind(String): string representing the individual of interest
+            dataprop(Str): string representing the property for which we want the timestamp
+            ind(Str): string representing the individual of interest
             
         Return:
-            timestamp(String): cleaned timestamp of the property of the individual
+            Str: cleaned timestamp of the property of the individual
         """
 
         timestamp = client.query.dataprop_b2_ind(dataprop, ind)
-        timestamp = self.clean_list(2, timestamp)
-
-        return timestamp
-
-    def get_urgencies(self, reachable):
-        """
-        Function to gt the reachable urgent locations.
-
-        Args:
-            reachable(List): list of all the reachable location
-
-        Returns:
-            reachable_urg(List): list of all the reachable locations that are urgent
-        """
-
-        urgencies = client.query.ind_b2_class('URGENT')
-        urgencies = self.clean_list(1, urgencies)
-        reachable_urg = list(set(urgencies) & set(reachable))
-        
-        return reachable_urg
+        return self.clean_list(2, timestamp)
     
     def reason_reach(self, reachable, position):
         """
         Function to decide in which location to go next. It is called when there are no urgent locations.
         
         Args:
-            reachable(List): list of all the reachable locations
-            position(String): string representing the current pose of the robot
+            reachable(Str): list of all the reachable locations
+            position(Str): string representing the current pose of the robot
             
         Returns:
-            target(String): string representing the location in which the robot will go to
+            Str: the location in which the robot will go next
         """
 
-        self.corridors = client.query.ind_b2_class('CORRIDOR')
-        corridors = self.clean_list(1, self.corridors)
-        
-        # if there is no urgency, continuosly check the corridors
+        corridors = self.get_queried('corridors')
+        # if there is no urgency, and the robot is already in a corridor, continuosly check the corridors
         if position in corridors:
             corridors.remove(position)
             # I assume that there is more then one corridor
-            target = random.choice(corridors)
-        # at the start of the simulation and whenever the robot needs to recharge, the position will be equal to E and
-        # the reachable locations will be many, i.e. the corridors; also, when the robot is in a room, the reachable location will be one,
-        # i.e. the corridor it is connected to, hence the need to manage the reasoning this way
+            return random.choice(corridors)
+        # if there is no urgency, and the robot is in a room, there will be only one reachable location
         else:
-            if len(reachable) == 1:
-                target = reachable[0]
-            else:
-                target = random.choice(reachable)
-        return target
+            return reachable[0]
 
     def reason_urg(self, reachable_urg):
         """
@@ -380,25 +387,22 @@ class BehaviorHelper:
         The robot goes in the most urgent location, which is the one that has not been visited for the longest time.
         
         Args:
-            reachable_urg(List): list of all the reachable locations that are urgent
+            reachable_urg(Str): list of all the reachable locations that are urgent
             
         Returns:
-            target(String): string representing the location in which the robot will go to
+            Str: the location in which the robot will go next
         """
 
         # if there is only one urgent location, go there
         if len(reachable_urg) == 1:
-            target = reachable_urg[0]
+            return reachable_urg[0]
         # else choose based on the timestamp
         else:
-            oldest = int(time.time())
+            visits = []
             for loc in reachable_urg:
-                # crea lista con append e fai min(list)
                 last_visit = self.get_timestamp('visitedAt', loc)
-                if int(last_visit) < oldest:
-                    oldest = int(last_visit)
-                    target = loc
-        return target
+                visits.append(last_visit)
+            return reachable_urg[visits.index(min(visits))]
 
     def decide_location(self):
         """
@@ -408,15 +412,14 @@ class BehaviorHelper:
             None
             
         Returns:
-            position(String): current position of the robot
-            target(String): string representing the location in which the robot will go to
+            position(Str): current position of the robot
+            target(Str): string representing the location in which the robot will go to
         """
 
-        position = client.query.objectprop_b2_ind('isIn', 'Robot1')
-        position = self.clean_list(1, position)
-        reachable = client.query.objectprop_b2_ind('canReach', 'Robot1')
-        reachable = self.clean_list(1, reachable)
-        reachable_urg = self.get_urgencies(reachable)
+        position = self.get_queried('position')
+        reachable = self.get_queried('reachable')
+        urgencies = self.get_queried('urgencies')
+        reachable_urg = list(set(urgencies) & set(reachable))
         print('Current position: ' + position)
         print('Reachable locations: ['+', '.join(reachable)+']')
         print('Urgent: ['+', '.join(reachable_urg)+']')
@@ -436,21 +439,19 @@ class BehaviorHelper:
         Function to reach and check the location that the robot has to go to.
         
         Args:
-            position(String): current position of the robot, which has to be updated
-            target(String): location with which to update the robot position
+            position(Str): current position of the robot, which has to be updated
+            target(Str): location with which to update the robot position
             
         Returns:
             None
         """
 
-        client.manipulation.replace_objectprop_b2_ind('isIn', 'Robot1', target, position)
-        last_change = self.get_timestamp('now', 'Robot1')
+        client.manipulation.replace_objectprop_b2_ind('isIn', self.robot, target, position)
+        last_change = self.get_timestamp('now', self.robot)
         now = str(int(time.time()))
-        client.manipulation.replace_dataprop_b2_ind('now', 'Robot1', 'Long', now, last_change)
-        # the 'visitedAt' property of the corridors has not been considered, given that they will never be considered urgent
-        self.corridors = client.query.ind_b2_class('CORRIDOR')
-        corridors = self.clean_list(1, self.corridors)
-        if target not in corridors:
+        client.manipulation.replace_dataprop_b2_ind('now', self.robot, 'Long', now, last_change)
+        corridors = self.get_queried('corridors')
+        if target not in corridors: # the 'visitedAt' property of the corridors has not been considered, given that they will never be urgent
             last_visit = self.get_timestamp('visitedAt', target)
             client.manipulation.replace_dataprop_b2_ind('visitedAt', target, 'Long', now, last_visit)
         print('Reached target...mmh...everything clear')
@@ -463,34 +464,36 @@ class BehaviorHelper:
         if room E is not in the reachable locations, then choose randomly in which location to go next and repeat until room E is reachable.
         
         Args: 
-            position(String): current position of the robot, which whill be updated with location 'E'
+            position(Str): current position of the robot, which whill be updated with location 'E'
             
         Returns:
             None
         """
 
-        print('I need to recharge, going to room E')
-        reached = False
+        print('I need to recharge, going to room ' + self.recharging_room)
+        if position == self.recharging_room:
+            reached = True
+        else:
+            reached = False
         while(reached == False):
-            reachable = client.query.objectprop_b2_ind('canReach', 'Robot1')
-            clean_list = self.clean_list(1, reachable)
+            reachable = self.get_queried('reachable')
             # If room E is reachable, go there
-            if 'E' in clean_list:
-                client.manipulation.replace_objectprop_b2_ind('isIn', 'Robot1', 'E', position)       
-                client.utils.apply_buffered_changes()
-                client.utils.sync_buffered_reasoner()
+            if self.recharging_room in reachable:
                 reached = True
             # Else choose randomly and repeat
             else:
-                if len(clean_list) == 1:
-                    choice = clean_list[0]
+                if len(reachable) == 1:
+                    choice = reachable[0]
                 else:
-                    choice = random.choice(clean_list)
-                client.manipulation.replace_objectprop_b2_ind('isIn', 'Robot1', choice, position)
+                    choice = random.choice(reachable)
+                client.manipulation.replace_objectprop_b2_ind('isIn', self.robot, choice, position)
                 client.utils.apply_buffered_changes()
                 client.utils.sync_buffered_reasoner()
                 # Update the current position
                 position = choice       
                 print('Almost there...I am in location ' + position + ' now')
             rospy.sleep(5)
-            print('Reached room E, recharging...')
+        client.manipulation.replace_objectprop_b2_ind('isIn', self.robot, self.recharging_room, position)       
+        client.utils.apply_buffered_changes()
+        client.utils.sync_buffered_reasoner()
+        print('Reached room ' +  self.recharging_room + ', recharging...')
