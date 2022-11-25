@@ -12,25 +12,25 @@ The requirements were:
 ## Software architecture
 
 ## Installation & running
-### Using roslaunch
-In order to make the code function correctly, the user should run the following line in the shell to install `xterm`, if not already installed
-```sh
-sudo apt-get update
-sudp apt-get -y install xterm
-```
-Also, given that the author decided to use the files [planner.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) and [controller.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) from the repository [arch_skeleton](https://github.com/buoncubi/arch_skeleton), and [topological_map.owl](https://github.com/buoncubi/topological_map/blob/main/topological_map.owl) from the repository [topological_map](https://github.com/buoncubi/topological_map) (both repositories by author [Luca Buoncompagni](https://github.com/buoncubi)), the user must clone the previous repositories and the current one in the ROS workspace:
+Given that the author decided to use the files [planner.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/planner.py) and [controller.py](https://github.com/buoncubi/arch_skeleton/blob/main/scripts/controller.py) from the repository [arch_skeleton](https://github.com/buoncubi/arch_skeleton), and [topological_map.owl](https://github.com/buoncubi/topological_map/blob/main/topological_map.owl) from the repository [topological_map](https://github.com/buoncubi/topological_map) (both repositories by author [Luca Buoncompagni](https://github.com/buoncubi)), the user must clone the mentioned repositories and the current one in the ROS workspace:
 ```sh
 git clone https://github.com/buoncubi/arch_skeleton
 git clone https://github.com/buoncubi/topological_map
 git clone https://github.com/sarasgambato/ExpRoLab_Assignment1
 ```
-Then, after having done `catkin_make` inside the ROS workspace, the user can run the code by running the following line in the shell
+### Using roslaunch
+In order to make the code function correctly, the user should run the following line in the shell to install `xterm`, if not already installed:
+```sh
+sudo apt-get update
+sudp apt-get -y install xterm
+```
+Then, after having done `catkin_make` inside the ROS workspace, the user can run the project by running the following line in the shell:
 ```sh
 roslaunch Assignment_1 assignment_launch.launch
 ```
 After this, another terminal should open displaying the node `behavior`.
 
-The author decided not to display the behavior of the other nodes. If the user wants to, it is sufficient to modify the launch file [assignment_launch.launch](https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/launch/assignment_launch.launch) inside the `launch` folder by adding the line `launch-prefix = "xterm -fa 'Monospace' -fs 10 -e` when launching a node. For example, if the user wants to see the behavior of the planner:
+The author decided not to display the behavior of the other nodes. If the user wants to, it is sufficient to modify the launch file [assignment_launch.launch](https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/launch/assignment_launch.launch) inside the `launch` folder by adding the line `launch-prefix = "xterm -fa 'Monospace' -fs 10 -e` when launching a node. For example, if the user wants to see the behavior of the `planner` node:
 ```xml
 <node pkg = "arch_skeleton"  
           type = "planner.py"      
