@@ -19,8 +19,8 @@
 
     <node pkg = "Assignment_1"  
           type = "behavior.py"      
-          name = "behavior"   
-          output = "screen"
+          name = "behavior"  
+          launch-prefix = "xterm -fa 'Monospace' -fs 10 -e"
     > </node>
 
     <node pkg = "Assignment_1"  
