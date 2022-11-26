@@ -25,7 +25,7 @@
 
     <node pkg = "Assignment_1"  
           type = "robot_states.py" 
-          name = "robot_states"
+          name = "robot-state"
     > </node>
     
     <node pkg = "arch_skeleton"  

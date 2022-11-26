@@ -13,8 +13,10 @@ Also, the class defines a publisher to notify that the battery is low.
 
 import threading
 import rospy
+from helper import InterfaceHelper
 from Assignment_1 import architecture_name_mapper as anm
 from std_msgs.msg import Bool
+from Assignment_1.msg import Point
 from Assignment_1.srv import GetPose, GetPoseResponse, SetPose, SetPoseResponse
 
 # A tag for identifying logs producer
@@ -117,4 +119,12 @@ class RobotState:
 if __name__ == "__main__":
     # Instantiate the node manager class and wait
     RobotState()
+
+    # Define the helper
+    helper = InterfaceHelper()
+
+    # Initialize robot position
+    robot_pose_param = rospy.get_param(anm.PARAM_INITIAL_POSE, [0, 0])
+    helper.init_robot_pose(Point(x=robot_pose_param[0], y=robot_pose_param[1]))
+
     rospy.spin()

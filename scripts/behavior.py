@@ -204,10 +204,6 @@ def main():
     # define the helper for the states of the fsm
     sm_helper = BehaviorHelper()
 
-    robot_pose_param = rospy.get_param(anm.PARAM_INITIAL_POSE, [0, 0])
-    # Initialise robot position in the `robot_state`, as required by the plan and control action servers.
-    helper.init_robot_pose(Point(x=robot_pose_param[0], y=robot_pose_param[1]))
-
     sm_main = StateMachine([])
     with sm_main:
         StateMachine.add(STATE_INIT, LoadOntology(),
