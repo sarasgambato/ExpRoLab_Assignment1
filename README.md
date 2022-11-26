@@ -41,8 +41,19 @@ This node implements two services, `state/set_pose` and `state/get_pose`, allowi
 - `state/set_pose` requires a `Point` to be set and returns nothing
 - `state/get_pose` requires nothing and returns a `Point`
 
+Moreover, the node implements a publisher of `Boolean` messages into the `state/battery_low` topic: the message is published every time the battery changes state, which is every 120 seconds, and it is equal to `True` if the battery is low, `False` otherwise. The user can change the value of the battery time by changing the constant variable `BATTERY_TIME` in the [robot_states.py](https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/scripts/robot_states.py) script.
+
 ### `planner` & `controller` nodes
 The user can find a detailed decription of these two nodes in the [README](https://github.com/buoncubi/arch_skeleton/blob/main/README.md) of the [arch_skeleton](https://github.com/buoncubi/arch_skeleton) repository.
+
+### ROS parameters
+The software requires the following ROS parameters:
+- `config/environment_size`: list of two float numbers, `[x_max, y_max]`. The *x*-th and *y*-th coordinates of the environment will be in the range of `[0, x_max)` and `[0, y_max)` respectively.
+- `state/intial_pose`: initial robot position in `[x, y]` coordinates within the `environment_size`.
+- `test/random_plan_points`: list of two integer numbers, `[min_n, max_n]` used to randomly chose the number of via points.
+- `test/random_plan_time`: list of two float numbers, `[min_time, max_time]` used to randomly chose the time required to compute the next via point of the plan.
+- `test/random_motion_time`: list of two float numbers, `[min_time, max_time]` used to randomly
+chose the time required to reach the next via point.
 
 ## Installation & running
 To correctly use this software, the user must follow these steps to install the required packages/repositories.
@@ -53,8 +64,25 @@ To correctly use this software, the user must follow these steps to install the 
 5. Run `chmod +x <fine_name>` for each file inside the folder `scripts` of the package `ExpRoLab_Assignment1`.
 6. Run `catkin_make` from the root of your ROS workspace.
 
+### Note
+The author found some issues with the function proposed in the script [armor_manipulation_client.py](https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/scripts/armor_manipulation_client.py) to disjoint the individuals of the ontology. Hence, another function was created in the script as:
+```py
+def disj_inds(self, inds):
+    try:
+        res = self._client.call('DISJOINT', 'IND', '', inds)
+
+    except rospy.ROSException:
+        raise ArmorServiceCallError("Cannot reach ARMOR client: Timeout Expired. Check if ARMOR is running.")
+
+    if res.success:
+        return res.is_consistent
+    else:
+        raise ArmorServiceInternalError(res.error_description, res.exit_code)
+```
+the user should copy and add this function in the script to make the software work correctly.
+
 ### Using roslaunch
-In order to make the code function correctly, the user should install `xterm` with the command `sudp apt-get -y install xterm`
+In order to make the launcher work correctly, the user should install `xterm` with the command `sudp apt-get -y install xterm`
 Then the user can run the software by using `roslaunch`:
 ```sh
 roslaunch Assignment_1 assignment_launch.launch
