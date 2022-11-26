@@ -17,7 +17,7 @@ The requirements were:
 ## Software architecture
 The Finite State Machine implemented by the software is shown in the following figure.
 <p align="center">
-<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/fsm.png" width=40%, height=40%>
+<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/finitestate.png" width=40%, height=40%>
 </p>
 
 As can be seen, the author decided to create a hierarchical state machine. In particular, we have the following states:
@@ -27,7 +27,7 @@ As can be seen, the author decided to create a hierarchical state machine. In pa
     2. **CHECK_TARGET**: this state changes the position of the robot and checks the location. 
 - **RECHARGING**: this states recharges the battery of the robot.
 
-### `behavior` node
+### The `behavior` node
 This node initializes the FSM and defines its behavior. In particular, in order not to make a "heavy" code, the author decided to implement a 
 `helper.py` script which can be found [here](https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/scripts/helper.py), where almost all of the reasoning is done. This script has three classes, each implementing a different helper:
 1. **ActionClientHelper** simplifies the implementation of a client for ROS action servers.
@@ -36,7 +36,7 @@ This node initializes the FSM and defines its behavior. In particular, in order 
 
 By doing so, by looking at the `behavior.py` script the user is able to clearly understand how the FSM transistions from one state to another; by looking at the `helper.py` the user can understand how the FSM reasons to make the robot change location, go recharge, etc.
 
-### `robot-state` node
+### The `robot_state` node
 This node implements two services, `state/set_pose` and `state/get_pose`, allowing to set and get the current robot position, a knowledge that is shared with the nodes `planner` and `controller` :
 - `state/set_pose` requires a `Point` to be set and returns nothing
 - `state/get_pose` requires nothing and returns a `Point`
@@ -45,7 +45,7 @@ Also, the node implements a publisher of `Boolean` messages into the `state/batt
 
 Moreover, the node takes the parameter `config/environment_size` and, through the `helper`, exploits the `state/set_pose` service to set the intial robot position.
 
-### `planner` & `controller` nodes
+### The `planner` & `controller` nodes
 The user can find a detailed decription of these two nodes in the [README](https://github.com/buoncubi/arch_skeleton/blob/main/README.md) of the [arch_skeleton](https://github.com/buoncubi/arch_skeleton) repository.
 
 ### ROS parameters
@@ -125,7 +125,7 @@ In order to accomplish all the objectives listed in the [introduction](#intro), 
 - If there are no urgent rooms, then the robot continuously checks the corridors.
 - Corridors are not checked for urgency, given that the robot mainly stays in the corridor and also because every time the robot checks a room, then it inevitably has to go check the connected corridor.
 - The battery time has been set at 2 minutes, after which the robot must go to room E. The downside of choosing an autonomy time this high is that the robot will take 2 minutes also to recharge. However, the author considered this a necessity for simulation purposes, in order to see if the algorithm worked in a proper way (i.e. the robot check only the corridors until some room becomes urgent). If the user wants to change the battery time, it is sufficient to change the value of the variable `BATTERY_TIME` in the script `robot_states.py`. When the robot needs to recharge, if room E is not directly reachable, it moves randomly until room E is reachable.
-- the `urgencyThreshold`, a parameter that can be changed in the file [topological_map.owl](https://github.com/buoncubi/topological_map/blob/main/topological_map.owl), was set to 50 seconds for simulation purposes, i.e. if the threshold was to small, the robot found itself stuck in a corridor continuosly checking the rooms it was connected to.
+- the `urgencyThreshold`, a parameter that can be changed in the file [topological_map.owl](https://github.com/buoncubi/topological_map/blob/main/topological_map.owl), was set to 50 seconds for simulation purposes, i.e. if the threshold was too small, the robot found itself stuck in a corridor continuosly checking the rooms it was connected to.
 
 ### Limitations and future technical improvement
 As mentioned in the [working hypothesis section](#req), when the robot needs to recharge it moves randomly until it reaches room E. To simulate movement, the author put a `rospy.sleep(5)`, which blocks all the system but was chosen for sake of simplicity. Thus, this could be improved by using a service.
