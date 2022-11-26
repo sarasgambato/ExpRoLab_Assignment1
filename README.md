@@ -22,9 +22,9 @@ The Finite State Machine implemented by the software is shown in the following f
 
 As can be seen, the author decided to create a hierarchical state machine. In particular, we have the following states:
 - **INITIALIZE_MAP**: this state uses the function `load_ontology.py` to create the environment and it does so by asking the user to input the number of corridors and the number of rooms for each corridor. Obviously, the user can create an environment with as many corridors and rooms as prefered, however the author decided to create an environment similar to the one suggested for the assignment, which is shown in [this section](#env).
-- **NORMAL**: sub-state-machine composed of two other states
+- **NORMAL**: inner FSM composed of two other states:
     1. **DECIDED_LOCATION**: this state reasons about the location that the robot will visit next. 
-    2. **GO_TO_RANDOM_POSE**: this state changes the position of the robot and checks the location. 
+    2. **CHECK_TARGET**: this state changes the position of the robot and checks the location. 
 - **RECHARGING**: this states recharges the battery of the robot.
 
 ### `behavior` node
@@ -41,7 +41,9 @@ This node implements two services, `state/set_pose` and `state/get_pose`, allowi
 - `state/set_pose` requires a `Point` to be set and returns nothing
 - `state/get_pose` requires nothing and returns a `Point`
 
-Moreover, the node implements a publisher of `Boolean` messages into the `state/battery_low` topic: the message is published every time the battery changes state, which is every 120 seconds, and it is equal to `True` if the battery is low, `False` otherwise. The user can change the value of the battery time by changing the constant variable `BATTERY_TIME` in the [robot_states.py](https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/scripts/robot_states.py) script.
+Also, the node implements a publisher of `Boolean` messages into the `state/battery_low` topic: the message is published every time the battery changes state, which is every 120 seconds, and it is equal to `True` if the battery is low, `False` otherwise. The user can change the value of the battery time by changing the constant variable `BATTERY_TIME` in the [robot_states.py](https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/scripts/robot_states.py) script.
+
+Moreover, the node takes the parameter `config/environment_size` and, through the `helper`, exploits the `state/set_pose` service to set the intial robot position.
 
 ### `planner` & `controller` nodes
 The user can find a detailed decription of these two nodes in the [README](https://github.com/buoncubi/arch_skeleton/blob/main/README.md) of the [arch_skeleton](https://github.com/buoncubi/arch_skeleton) repository.
