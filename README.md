@@ -1,7 +1,7 @@
 # ExpRoLab Assignment 1 
 
 ## <a id="intro"></a> Introduction
-The aim of this assignment consists in the development of a Finite State Machine (FSM) to control the behavior of a robot in a indoor environment with doors and corridors for surveillance purposes. The robot’s objective is to visit the different locations of the environment and check them.
+This repository contains a ROS-based software that implements a Finite State Machine (FSM) to control the behavior of a robot in a indoor environment with rooms, doors and corridors for surveillance purposes. The robot’s objective is to visit the different locations of the environment and check them.
 
 The classes were:
 - `LOCATION`: can either be a `ROOM` (location with one door) or a `CORRIDOR` (location with *at least* one door).
@@ -36,10 +36,13 @@ This node initializes the FSM and defines its behavior. In particular, in order 
 
 By doing so, by looking at the `behavior.py` script the user is able to clearly understand how the FSM transistions from one state to another; by looking at the `helper.py` the user can understand how the FSM reasons to make the robot change location, go recharge, etc.
 
-### `robot_states` node
+### `robot-state` node
+This node implements two services, `state/set_pose` and `state/get_pose`, allowing to set and get the current robot position, a knowledge that is shared with the nodes `planner` and `controller` :
+- `state/set_pose` requires a `Point` to be set and returns nothing
+- `state/get_pose` requires nothing and returns a `Point`
 
 ### `planner` & `controller` nodes
-The user can find a detailed decription of these two nodes in the [readme](https://github.com/buoncubi/arch_skeleton/blob/main/README.md) of the [arch_skeleton](https://github.com/buoncubi/arch_skeleton) repository.
+The user can find a detailed decription of these two nodes in the [README](https://github.com/buoncubi/arch_skeleton/blob/main/README.md) of the [arch_skeleton](https://github.com/buoncubi/arch_skeleton) repository.
 
 ## Installation & running
 To correctly use this software, the user must follow these steps to install the required packages/repositories.
