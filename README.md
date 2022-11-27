@@ -27,7 +27,12 @@ As can be seen, the author decided to create a hierarchical state machine. In pa
     2. **CHECK_TARGET**: this state changes the position of the robot and checks the location. 
 - **RECHARGING**: this states recharges the battery of the robot.
 
-### The `behavior` node
+In the following figure the complete software architecture can be seen. It is important to notice that the node `behavior` communicates with the action servers, with the aRMOR server and with the `robot_state` node through a `helper`, which will be descripted in the following sub-section. 
+<p align="center">
+<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/UML.png" width=70%, height=70%>
+</p>
+
+### The `behavior` node and the `helper`
 This node initializes the FSM and defines its behavior. In particular, in order not to make a "heavy" code, the author decided to implement a 
 `helper.py` script which can be found [here](https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/scripts/helper.py), where almost all of the reasoning is done. This script has three classes, each implementing a different helper:
 1. **ActionClientHelper** simplifies the implementation of a client for ROS action servers.
