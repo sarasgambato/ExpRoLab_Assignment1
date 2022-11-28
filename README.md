@@ -136,7 +136,12 @@ chose the time required to reach the next via point.
 ## Running code behavior
 In the following figure the user can see all the relevant parts showing how the software works
 <p align="center">
-<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/behavior.png" width=80%, height=80%>
+<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/init.png" width=49%, height=49%>
+<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/corr.png" width=49%, height=49%>
+</p>
+<p align="center">
+<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/urgent.png" width=49%, height=49%>
+<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/recharge.png" width=49%, height=49%>
 </p>
 
 In particular:
@@ -149,7 +154,7 @@ In particular:
 ### <a id="env"></a> Environment
 The environment used for the simulation is shown in the following figure. 
 <p align="center">
-<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/environment.png" width=30%, height=30%>
+<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/env.png" width=30%, height=30%>
 </p>
 
 ### <a id="req"></a> Working hypothesis
