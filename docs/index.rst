@@ -23,6 +23,6 @@ Indices and tables
 Assignment_1
 *********************
 
-This is the documenation for thefirst assignment of the Experimental Robotics Laboratory course.
+This is the documenation for the first assignment of the Experimental Robotics Laboratory course.
 By clicking on 'scripts' the user will see the documentation of all the scripts used to implement the assignment.
 By clicking on 'utilities', the user will see the documentation of a script used to define the name of each node, server, topic, and some useful parameter.
