@@ -11,7 +11,7 @@ PARAM_INITIAL_POSE = 'state/initial_pose'
 
 
 # The name of the node that sets/gets the pose of the robot and manages its battery.
-NODE_ROBOT_STATE = 'robot-state'
+NODE_ROBOT_STATE = 'robot_states'
 
 # The name of the server to get the current robot pose.
 SERVER_GET_POSE = 'state/get_pose'

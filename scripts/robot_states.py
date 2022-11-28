@@ -1,14 +1,21 @@
 #!/usr/bin/env python3
 
 """
-.. module:: robot_states
+.. module:: robot_state
     :platform: ROS
-    :synopsis: Python module for the node manager class.
+    :synopsis: Python module for the publisher of the state of the battery .
 
 .. moduleauthor:: Sara Sgambato s4648592@studneti.unige.it
 
 This node has a class in which two services are defined: one to get the current robot pose and one to set it.
 Also, the class defines a publisher to notify that the battery is low.
+
+Publishes to:
+    /state/battery_low the state of the battery (high/low)
+
+Servers: 
+    /state/set_pose: server to set the current robot pose
+    /state/get_pose: server to get the current robot pose
 """
 
 import threading
@@ -23,7 +30,7 @@ from Assignment_1.srv import GetPose, GetPoseResponse, SetPose, SetPoseResponse
 LOG_TAG = anm.NODE_ROBOT_STATE
 
 # constant value representing the battery usage time
-BATTERY_TIME = 120
+BATTERY_TIME = 80
 
 class RobotState:
     """
@@ -49,13 +56,13 @@ class RobotState:
 
     def set_pose(self, request):
         """
-        Function implementing the 'robot/set_pose' service.
+        Function implementing the 'state/set_pose' service.
 
         Args:
             request(Point): current robot position to be set
 
         Returns:
-            SetPoseResponse(): empty responce
+            SetPoseResponse(): empty response
         """
 
         if request.pose is not None:
@@ -67,13 +74,13 @@ class RobotState:
 
     def get_pose(self, request):
         """
-        Function implementing the 'robot/get_pose' service.
+        Function implementing the 'state/get_pose' service.
         
         Args:
-            request(Point): given by th client as empty, it is not used
+            request: given by the client as empty, it is not used
             
         Returns:
-            responce(GetPoseResponce): current robot position
+            response(Point): current robot position
         """
 
         if self._pose is None:
@@ -102,7 +109,7 @@ class RobotState:
         Function that publishes when the battery changes state (high/low) based on a constant delay.
         
         Args:
-            publisher(Publisher): publisher for the message,
+            publisher(Publisher): publisher for the message
             
         Returns:
             None
@@ -117,7 +124,7 @@ class RobotState:
             self._battery_low = not self._battery_low
 
 if __name__ == "__main__":
-    # Instantiate the node manager class and wait
+    # Instantiate the node manager class
     RobotState()
 
     # Define the helper

@@ -10,8 +10,6 @@ Welcome to Assignment_1's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
-
 Indices and tables
 ==================
 
@@ -21,8 +19,6 @@ Indices and tables
 
 Assignment_1's documentation!
 ********************************
-
-This is the documentation of the Assignment_1 package!
 
 Behavior Module
 =====================

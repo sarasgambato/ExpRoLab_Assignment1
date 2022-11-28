@@ -75,6 +75,17 @@
 
 <span class="sd">This module implements three classes representing three different helpers: one to simplify the implementation of a client for ROS action servers, </span>
 <span class="sd">one that manages the synchronization with subscribers and action servers and one to help the fsm machine taking decisions.</span>
+
+<span class="sd">Clients:</span>
+<span class="sd">    /armor_client: client to communicate with the aRMOR server</span>
+<span class="sd">    /motion/planner: client to communicate with the planner server, which plans a random path with via points</span>
+<span class="sd">    /motion/controller: client to communicate with the controller server, which has to follow the path provided by the planner server</span>
+
+<span class="sd">Subscribes to:</span>
+<span class="sd">    /state/battery_low where the state of the battery (high/low) is published</span>
+
+<span class="sd">Servers:</span>
+<span class="sd">    /state/set_pose: server to set the current robot pose, stored in the &#39;robot_state&#39; node</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">rospy</span>
@@ -82,7 +93,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">actionlib</span> <span class="kn">import</span> <span class="n">SimpleActionClient</span>
 <span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
-<span class="kn">from</span> <span class="nn">armor_client</span> <span class="kn">import</span> <span class="n">ArmorClient</span>
+<span class="kn">from</span> <span class="nn">armor_api.armor_client</span> <span class="kn">import</span> <span class="n">ArmorClient</span>
 <span class="kn">from</span> <span class="nn">Assignment_1</span> <span class="kn">import</span> <span class="n">architecture_name_mapper</span> <span class="k">as</span> <span class="n">anm</span>
 <span class="kn">from</span> <span class="nn">std_msgs.msg</span> <span class="kn">import</span> <span class="n">Bool</span>
 <span class="kn">from</span> <span class="nn">Assignment_1.msg</span> <span class="kn">import</span> <span class="n">PlanAction</span><span class="p">,</span> <span class="n">ControlAction</span>
@@ -196,8 +207,8 @@
 <span class="sd">        Function called when the action server has finished its computation.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            status(Str):</span>
-<span class="sd">            results(Str):</span>
+<span class="sd">            status(Str): status of the action server</span>
+<span class="sd">            results(Str): results from the action server</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
@@ -249,7 +260,7 @@
 <span class="sd">            None</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            _Str: result of the action server, if any, &#39;None&#39; otherwise</span>
+<span class="sd">            Str: result of the action server, if any, &#39;None&#39; otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span><span class="p">:</span>
@@ -290,10 +301,10 @@
 
     <span class="k">def</span> <span class="nf">_battery_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Function for the subscriber to get messages published from the `robot-state` node into the `/state/battery_low/` topic.</span>
+<span class="sd">        Function for the subscriber to get messages published from the `robot_state` node into the `/state/battery_low/` topic.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            msg():</span>
+<span class="sd">            msg(Bool): status of the battery</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
@@ -316,7 +327,7 @@
 <span class="sd">            None</span>
 <span class="sd">        </span>
 <span class="sd">        Return:</span>
-<span class="sd">            _battery_low(Bool): `True` if the battery is low, `False` otherwise</span>
+<span class="sd">            Bool: `True` if the battery is low, `False` otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_battery_low</span></div>
@@ -324,7 +335,7 @@
 <div class="viewcode-block" id="InterfaceHelper.init_robot_pose"><a class="viewcode-back" href="../../index.html#scripts.helper.InterfaceHelper.init_robot_pose">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">init_robot_pose</span><span class="p">(</span><span class="n">point</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Function to update the current position of the robot stored in the &#39;robot-state&#39; node.</span>
+<span class="sd">        Function to update the current position of the robot stored in the &#39;robot_state&#39; node.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            point(Point): point representing the robot pose in (x, y) coordinates</span>

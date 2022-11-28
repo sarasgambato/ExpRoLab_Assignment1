@@ -8,10 +8,13 @@
 .. moduleauthor:: Sara Sgambato s4648592@studenti.unige.it
 
 This node adds all the wanted individuals in the map and their properties and it creates all the connections.
+
+Clients:
+    /armor_client: client to communicate with the aRMOR server in order to create the ontology.
 """
 
 import time
-from armor_client import ArmorClient
+from armor_api.armor_client import ArmorClient
 from os.path import dirname, realpath
 client = ArmorClient("armor_client", "my_ontology") 
 
@@ -57,6 +60,7 @@ def LoadMap():
     for i in range(0, n_corridors):
         corridors.append('C'+str(i+1))
         client.manipulation.add_ind_to_class(corridors[i], 'LOCATION')
+        print('Added corridor '+ corridors[i])
         # Ask the user how many rooms the i-th corridor has
         n_rooms_corridor = input('How many rooms does corridor ' + corridors[i] + ' have? ')
         while(n_rooms_corridor.isdigit() == False):
@@ -66,11 +70,13 @@ def LoadMap():
             rooms.append('R'+str(room_index+1))
             doors.append('D'+str(door_index+1))
             client.manipulation.add_ind_to_class(rooms[room_index], 'LOCATION')
+            print('Added room ' + rooms[room_index])
             client.manipulation.add_ind_to_class(doors[door_index], 'DOOR')
             client.manipulation.add_dataprop_to_ind('visitedAt', rooms[room_index], 'Long', str(int(time.time())))
             # Connect the i-th corridor with the j-th room
             client.manipulation.add_objectprop_to_ind('hasDoor', rooms[room_index], doors[door_index])
             client.manipulation.add_objectprop_to_ind('hasDoor', corridors[i], doors[door_index])
+            print('Added door ' + doors[door_index] + ' connecting corridor ' + corridors[i] + ' with room ' + rooms[room_index])
             door_index += 1
             room_index += 1
         # Create a door connecting the corridor to room E
@@ -78,6 +84,7 @@ def LoadMap():
         client.manipulation.add_ind_to_class(doors[door_index], 'DOOR')
         client.manipulation.add_objectprop_to_ind('hasDoor', 'E', doors[door_index])
         client.manipulation.add_objectprop_to_ind('hasDoor', corridors[i], doors[door_index])
+        print('Added door ' + doors[door_index] + ' connecting corridor E with corridor ' + corridors[i])
         door_index += 1
     # Add corridor E to the list of corridors
     corridors.append('E')
@@ -89,6 +96,7 @@ def LoadMap():
         client.manipulation.add_ind_to_class(doors[door_index], 'DOOR')
         client.manipulation.add_objectprop_to_ind('hasDoor', corridors[k], doors[door_index])
         client.manipulation.add_objectprop_to_ind('hasDoor', corridors[k+1], doors[door_index])
+        print('Added door ' + doors[door_index] + ' connecting corridor ' + corridors [k] + ' with corridor ' + corridors[k+1])
         door_index += 1
 
     # Disjoint all the individuals

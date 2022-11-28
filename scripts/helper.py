@@ -9,6 +9,17 @@
 
 This module implements three classes representing three different helpers: one to simplify the implementation of a client for ROS action servers, 
 one that manages the synchronization with subscribers and action servers and one to help the fsm machine taking decisions.
+
+Clients:
+    /armor_client: client to communicate with the aRMOR server
+    /motion/planner: client to communicate with the planner server, which plans a random path with via points
+    /motion/controller: client to communicate with the controller server, which has to follow the path provided by the planner server
+
+Subscribes to:
+    /state/battery_low where the state of the battery (high/low) is published
+
+Servers:
+    /state/set_pose: server to set the current robot pose, stored in the 'robot_state' node
 """
 
 import rospy
@@ -16,7 +27,7 @@ import random
 import time
 from actionlib import SimpleActionClient
 from threading import Lock
-from armor_client import ArmorClient
+from armor_api.armor_client import ArmorClient
 from Assignment_1 import architecture_name_mapper as anm
 from std_msgs.msg import Bool
 from Assignment_1.msg import PlanAction, ControlAction
@@ -130,8 +141,8 @@ class ActionClientHelper:
         Function called when the action server has finished its computation.
         
         Args:
-            status(Str):
-            results(Str):
+            status(Str): status of the action server
+            results(Str): results from the action server
             
         Returns:
             None
@@ -183,7 +194,7 @@ class ActionClientHelper:
             None
             
         Returns:
-            _Str: result of the action server, if any, 'None' otherwise
+            Str: result of the action server, if any, 'None' otherwise
         """
 
         if self._is_done:
@@ -224,10 +235,10 @@ class InterfaceHelper:
 
     def _battery_callback(self, msg):
         """
-        Function for the subscriber to get messages published from the `robot-state` node into the `/state/battery_low/` topic.
+        Function for the subscriber to get messages published from the `robot_state` node into the `/state/battery_low/` topic.
         
         Args:
-            msg():
+            msg(Bool): status of the battery
             
         Returns:
             None
@@ -250,7 +261,7 @@ class InterfaceHelper:
             None
         
         Return:
-            _battery_low(Bool): `True` if the battery is low, `False` otherwise
+            Bool: `True` if the battery is low, `False` otherwise
         """
 
         return self._battery_low
@@ -258,7 +269,7 @@ class InterfaceHelper:
     @staticmethod
     def init_robot_pose(point):
         """
-        Function to update the current position of the robot stored in the 'robot-state' node.
+        Function to update the current position of the robot stored in the 'robot_state' node.
         
         Args:
             point(Point): point representing the robot pose in (x, y) coordinates

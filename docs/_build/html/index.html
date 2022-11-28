@@ -145,12 +145,20 @@
 </ul>
 <div class="section" id="assignment-1-s-documentation">
 <h2>Assignment_1's documentation!<a class="headerlink" href="#assignment-1-s-documentation" title="Permalink to this heading"></a></h2>
-<p>This is the documentation of the Assignment_1 package!</p>
 </div>
 </div>
 <div class="section" id="module-scripts.behavior">
 <span id="behavior-module"></span><h1>Behavior Module<a class="headerlink" href="#module-scripts.behavior" title="Permalink to this heading"></a></h1>
-<span class="target" id="module-behavior"></span><p>This module defines the behavior of the Finite State Machine.</p>
+<span class="target" id="module-behavior"></span><p>This module defines the behavior of the Finite State Machine. It has two states and one inner FSM:</p>
+<ul class="simple">
+<li><p>Initialization state: the ontology is created;</p></li>
+<li><p>Recharging state: the robot goes to recharge;</p></li>
+<li><p>Normal: inner FSM with two states, Decision state and Checking state, to decide what location to visit next and to check it.</p></li>
+</ul>
+<dl class="simple">
+<dt>Servers:</dt><dd><p>/fsm_server: introspection server of SMACH, necessary for the developer to visualize the state machine</p>
+</dd>
+</dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="scripts.behavior.CheckTarget">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.behavior.</span></span><span class="sig-name descname"><span class="pre">CheckTarget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">helper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sm_helper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/behavior.html#CheckTarget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.behavior.CheckTarget" title="Permalink to this definition"></a></dt>
@@ -158,14 +166,14 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.behavior.CheckTarget.execute">
 <span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">userdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/behavior.html#CheckTarget.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.behavior.CheckTarget.execute" title="Permalink to this definition"></a></dt>
-<dd><p>Function that is executed every time the fsm enters the GO_TO_RANDOM_POSE state.
+<dd><p>Function that is executed every time the fsm enters the CHECK_TARGET state.
 It makes the robot go to the wanted location and checks it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>userdata</strong> -- </p>
+<dd class="field-odd"><p><strong>userdata</strong> -- used to pass data between states of the FSM</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>'recharging' if the battery is low, 'went_to_random_pose' otherwise</p>
+<dd class="field-even"><p>'recharging' if the battery is low, 'went_target' otherwise</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Str</p>
@@ -186,7 +194,7 @@ It makes the robot go to the wanted location and checks it.</p>
 It decides in which location to go next based on some criteria.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>userdata</strong> -- </p>
+<dd class="field-odd"><p><strong>userdata</strong> -- used to pass data between states of the FSM</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>'recharging' if the battery is low, 'target_acquired' otherwise</p>
@@ -210,7 +218,7 @@ It decides in which location to go next based on some criteria.</p>
 It loads the topological map and transitions to the state NORMAL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>userdata</strong> -- </p>
+<dd class="field-odd"><p><strong>userdata</strong> -- not used</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>'everything_loaded' once the map has been intialized</p>
@@ -234,7 +242,7 @@ It loads the topological map and transitions to the state NORMAL.</p>
 It recharges the battery of the robot and transitions to the state NORMAL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>userdata</strong> -- </p>
+<dd class="field-odd"><p><strong>userdata</strong> -- not used</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>'recharged' once the battery is recharged</p>
@@ -251,8 +259,8 @@ It recharges the battery of the robot and transitions to the state NORMAL.</p>
 <dt class="sig sig-object py" id="scripts.behavior.main">
 <span class="sig-prename descclassname"><span class="pre">scripts.behavior.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/behavior.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.behavior.main" title="Permalink to this definition"></a></dt>
 <dd><p>Main function which initalizes the Finite State Machine node 'behavior'.
-Two helpers are defined to help the state macine take decisions and to manage the battery.
-The fsm is hierarchical as to create a more modular and robust architecture.</p>
+Two helpers are defined to help the state machine take decisions and to manage the battery.
+The fsm is hierarchical as to create a more modular and robust architecture. In particula:</p>
 </dd></dl>
 
 </div>
@@ -260,6 +268,16 @@ The fsm is hierarchical as to create a more modular and robust architecture.</p>
 <span id="helper-module"></span><h1>Helper Module<a class="headerlink" href="#module-scripts.helper" title="Permalink to this heading"></a></h1>
 <span class="target" id="module-helper"></span><p>This module implements three classes representing three different helpers: one to simplify the implementation of a client for ROS action servers,
 one that manages the synchronization with subscribers and action servers and one to help the fsm machine taking decisions.</p>
+<dl class="simple">
+<dt>Clients:</dt><dd><p>/armor_client: client to communicate with the aRMOR server
+/motion/planner: client to communicate with the planner server, which plans a random path with via points
+/motion/controller: client to communicate with the controller server, which has to follow the path provided by the planner server</p>
+</dd>
+<dt>Subscribes to:</dt><dd><p>/state/battery_low where the state of the battery (high/low) is published</p>
+</dd>
+<dt>Servers:</dt><dd><p>/state/set_pose: server to set the current robot pose, stored in the 'robot_state' node</p>
+</dd>
+</dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="scripts.helper.ActionClientHelper">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.helper.</span></span><span class="sig-name descname"><span class="pre">ActionClientHelper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">done_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feedback_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mutex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#ActionClientHelper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.ActionClientHelper" title="Permalink to this definition"></a></dt>
@@ -290,7 +308,7 @@ one that manages the synchronization with subscribers and action servers and one
 <dd class="field-even"><p>result of the action server, if any, 'None' otherwise</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>_Str</p>
+<dd class="field-odd"><p>Str</p>
 </dd>
 </dl>
 </dd></dl>
@@ -518,7 +536,7 @@ if room E is not in the reachable locations, then choose randomly in which locat
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.helper.InterfaceHelper.init_robot_pose">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_robot_pose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/helper.html#InterfaceHelper.init_robot_pose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.helper.InterfaceHelper.init_robot_pose" title="Permalink to this definition"></a></dt>
-<dd><p>Function to update the current position of the robot stored in the 'robot-state' node.</p>
+<dd><p>Function to update the current position of the robot stored in the 'robot_state' node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>point</strong> (<em>Point</em>) -- point representing the robot pose in (x, y) coordinates</p>
@@ -541,7 +559,7 @@ if room E is not in the reachable locations, then choose randomly in which locat
 <dd class="field-even"><p><cite>True</cite> if the battery is low, <cite>False</cite> otherwise</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>_battery_low(Bool)</p>
+<dd class="field-odd"><p>Bool</p>
 </dd>
 </dl>
 </dd></dl>
@@ -566,8 +584,15 @@ This function assumes that no states of the Finite State Machine run concurrentl
 </div>
 <div class="section" id="module-scripts.robot_states">
 <span id="robot-states-module"></span><h1>Robot States Module<a class="headerlink" href="#module-scripts.robot_states" title="Permalink to this heading"></a></h1>
-<span class="target" id="module-robot_states"></span><p>This node has a class in which two services are defined: one to get the current robot pose and one to set it.
+<span class="target" id="module-robot_state"></span><p>This node has a class in which two services are defined: one to get the current robot pose and one to set it.
 Also, the class defines a publisher to notify that the battery is low.</p>
+<dl class="simple">
+<dt>Publishes to:</dt><dd><p>/state/battery_low the state of the battery (high/low)</p>
+</dd>
+<dt>Servers:</dt><dd><p>/state/set_pose: server to set the current robot pose
+/state/get_pose: server to get the current robot pose</p>
+</dd>
+</dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="scripts.robot_states.RobotState">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.robot_states.</span></span><span class="sig-name descname"><span class="pre">RobotState</span></span><a class="reference internal" href="_modules/scripts/robot_states.html#RobotState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_states.RobotState" title="Permalink to this definition"></a></dt>
@@ -575,16 +600,16 @@ Also, the class defines a publisher to notify that the battery is low.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.robot_states.RobotState.get_pose">
 <span class="sig-name descname"><span class="pre">get_pose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_states.html#RobotState.get_pose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_states.RobotState.get_pose" title="Permalink to this definition"></a></dt>
-<dd><p>Function implementing the 'robot/get_pose' service.</p>
+<dd><p>Function implementing the 'state/get_pose' service.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>request</strong> (<em>Point</em>) -- given by th client as empty, it is not used</p>
+<dd class="field-odd"><p><strong>request</strong> -- given by the client as empty, it is not used</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>current robot position</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>responce(GetPoseResponce)</p>
+<dd class="field-odd"><p>response(Point)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -592,13 +617,13 @@ Also, the class defines a publisher to notify that the battery is low.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.robot_states.RobotState.set_pose">
 <span class="sig-name descname"><span class="pre">set_pose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_states.html#RobotState.set_pose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_states.RobotState.set_pose" title="Permalink to this definition"></a></dt>
-<dd><p>Function implementing the 'robot/set_pose' service.</p>
+<dd><p>Function implementing the 'state/set_pose' service.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>request</strong> (<em>Point</em>) -- current robot position to be set</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>empty responce</p>
+<dd class="field-even"><p>empty response</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>SetPoseResponse()</p>
@@ -612,6 +637,10 @@ Also, the class defines a publisher to notify that the battery is low.</p>
 <div class="section" id="module-scripts.load_ontology">
 <span id="load-ontology-module"></span><h1>Load Ontology Module<a class="headerlink" href="#module-scripts.load_ontology" title="Permalink to this heading"></a></h1>
 <span class="target" id="module-load_ontology"></span><p>This node adds all the wanted individuals in the map and their properties and it creates all the connections.</p>
+<dl class="simple">
+<dt>Clients:</dt><dd><p>/armor_client: client to communicate with the aRMOR server in order to create the ontology.</p>
+</dd>
+</dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="scripts.load_ontology.LoadMap">
 <span class="sig-prename descclassname"><span class="pre">scripts.load_ontology.</span></span><span class="sig-name descname"><span class="pre">LoadMap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/load_ontology.html#LoadMap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.load_ontology.LoadMap" title="Permalink to this definition"></a></dt>

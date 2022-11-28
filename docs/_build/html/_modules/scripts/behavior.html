@@ -73,7 +73,14 @@
 <span class="sd">    </span>
 <span class="sd">.. moduleauthor:: Sara Sgambato s4648592@studenti.unige.it</span>
 
-<span class="sd">This module defines the behavior of the Finite State Machine.</span>
+<span class="sd">This module defines the behavior of the Finite State Machine. It has two states and one inner FSM:</span>
+
+<span class="sd">* Initialization state: the ontology is created;</span>
+<span class="sd">* Recharging state: the robot goes to recharge;</span>
+<span class="sd">* Normal: inner FSM with two states, Decision state and Checking state, to decide what location to visit next and to check it.</span>
+
+<span class="sd">Servers:</span>
+<span class="sd">    /fsm_server: introspection server of SMACH, necessary for the developer to visualize the state machine</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">rospy</span>
@@ -89,8 +96,8 @@
 <span class="c1"># list of states in the machine</span>
 <span class="n">STATE_INIT</span> <span class="o">=</span> <span class="s1">&#39;INITIALIZE_MAP&#39;</span>
 <span class="n">STATE_DECISION</span> <span class="o">=</span> <span class="s1">&#39;DECIDE_LOCATION&#39;</span>
-<span class="n">STATE_PLAN_TO_RANDOM_POSE</span> <span class="o">=</span> <span class="s1">&#39;PLAN_TO_RANDOM_POSE&#39;</span>
-<span class="n">STATE_GO_TO_RANDOM_POSE</span> <span class="o">=</span> <span class="s1">&#39;GO_TO_RANDOM_POSE&#39;</span>
+<span class="n">STATE_PLAN_TARGET</span> <span class="o">=</span> <span class="s1">&#39;PLAN_TO_TARGET&#39;</span>
+<span class="n">STATE_CHECK_TARGET</span> <span class="o">=</span> <span class="s1">&#39;CHECK_TARGET&#39;</span>
 <span class="n">STATE_NORMAL</span> <span class="o">=</span> <span class="s1">&#39;NORMAL&#39;</span>
 <span class="n">STATE_RECHARGING</span> <span class="o">=</span> <span class="s1">&#39;RECHARGING&#39;</span>
 
@@ -100,7 +107,7 @@
 <span class="n">TRANS_BATTERY_LOW</span> <span class="o">=</span> <span class="s1">&#39;battery_low&#39;</span>
 <span class="n">TRANS_RECHARGING</span> <span class="o">=</span> <span class="s1">&#39;recharging&#39;</span>
 <span class="n">TRANS_RECHARGED</span> <span class="o">=</span> <span class="s1">&#39;recharged&#39;</span>
-<span class="n">TRANS_WENT_RANDOM_POSE</span> <span class="o">=</span> <span class="s1">&#39;went_to_random_pose&#39;</span>
+<span class="n">TRANS_WENT_TARGET</span> <span class="o">=</span> <span class="s1">&#39;went_target&#39;</span>
 
 <span class="c1"># constant values</span>
 <span class="n">SLEEP_TIME</span> <span class="o">=</span> <span class="mf">0.3</span>
@@ -119,7 +126,7 @@
 <span class="sd">        It loads the topological map and transitions to the state NORMAL.</span>
 
 <span class="sd">        Args: </span>
-<span class="sd">            userdata</span>
+<span class="sd">            userdata: not used</span>
 
 <span class="sd">        Returns: </span>
 <span class="sd">            Str: &#39;everything_loaded&#39; once the map has been intialized</span>
@@ -144,7 +151,7 @@
 <span class="sd">        It recharges the battery of the robot and transitions to the state NORMAL.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            userdata</span>
+<span class="sd">            userdata: not used</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Str: &#39;recharged&#39; once the battery is recharged</span>
@@ -178,7 +185,7 @@
 <span class="sd">        It decides in which location to go next based on some criteria.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            userdata</span>
+<span class="sd">            userdata: used to pass data between states of the FSM</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Str: &#39;recharging&#39; if the battery is low, &#39;target_acquired&#39; otherwise</span>
@@ -218,19 +225,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_helper</span> <span class="o">=</span> <span class="n">helper</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sm_helper</span> <span class="o">=</span> <span class="n">sm_helper</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">environment_size</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;config/environment_size&#39;</span><span class="p">)</span>
-        <span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="n">TRANS_WENT_RANDOM_POSE</span><span class="p">,</span> <span class="n">TRANS_RECHARGING</span><span class="p">],</span> 
+        <span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="n">TRANS_WENT_TARGET</span><span class="p">,</span> <span class="n">TRANS_RECHARGING</span><span class="p">],</span> 
                        <span class="n">input_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;current_pose&#39;</span><span class="p">,</span> <span class="s1">&#39;choice&#39;</span><span class="p">,</span> <span class="s1">&#39;random_plan&#39;</span><span class="p">])</span>
 
 <div class="viewcode-block" id="CheckTarget.execute"><a class="viewcode-back" href="../../index.html#scripts.behavior.CheckTarget.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Function that is executed every time the fsm enters the GO_TO_RANDOM_POSE state.</span>
+<span class="sd">        Function that is executed every time the fsm enters the CHECK_TARGET state.</span>
 <span class="sd">        It makes the robot go to the wanted location and checks it.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            userdata</span>
+<span class="sd">            userdata: used to pass data between states of the FSM</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            Str: &#39;recharging&#39; if the battery is low, &#39;went_to_random_pose&#39; otherwise</span>
+<span class="sd">            Str: &#39;recharging&#39; if the battery is low, &#39;went_target&#39; otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># send the goal to the controller and check that the via points are reached</span>
@@ -251,7 +258,7 @@
                     <span class="n">choice</span> <span class="o">=</span> <span class="n">userdata</span><span class="o">.</span><span class="n">choice</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_sm_helper</span><span class="o">.</span><span class="n">check_location</span><span class="p">(</span><span class="n">current_pose</span><span class="p">,</span> <span class="n">choice</span><span class="p">)</span>
                     <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">TRANS_WENT_RANDOM_POSE</span>
+                    <span class="k">return</span> <span class="n">TRANS_WENT_TARGET</span>
             <span class="k">finally</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_helper</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEP_TIME</span><span class="p">)</span></div></div>
@@ -259,8 +266,8 @@
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../index.html#scripts.behavior.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Main function which initalizes the Finite State Machine node &#39;behavior&#39;.</span>
-<span class="sd">    Two helpers are defined to help the state macine take decisions and to manage the battery.</span>
-<span class="sd">    The fsm is hierarchical as to create a more modular and robust architecture.</span>
+<span class="sd">    Two helpers are defined to help the state machine take decisions and to manage the battery.</span>
+<span class="sd">    The fsm is hierarchical as to create a more modular and robust architecture. In particula:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s1">&#39;behavior&#39;</span><span class="p">,</span> <span class="n">log_level</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 
@@ -270,31 +277,30 @@
     <span class="c1"># define the helper for the states of the fsm</span>
     <span class="n">sm_helper</span> <span class="o">=</span> <span class="n">BehaviorHelper</span><span class="p">()</span>
 
-    <span class="n">robot_pose_param</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="n">anm</span><span class="o">.</span><span class="n">PARAM_INITIAL_POSE</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
-    <span class="c1"># Initialise robot position in the `robot_state`, as required by the plan and control action servers.</span>
-    <span class="n">helper</span><span class="o">.</span><span class="n">init_robot_pose</span><span class="p">(</span><span class="n">Point</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">robot_pose_param</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">robot_pose_param</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-
     <span class="n">sm_main</span> <span class="o">=</span> <span class="n">StateMachine</span><span class="p">([])</span>
     <span class="k">with</span> <span class="n">sm_main</span><span class="p">:</span>
+        <span class="c1"># Initialization state</span>
         <span class="n">StateMachine</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">STATE_INIT</span><span class="p">,</span> <span class="n">LoadOntology</span><span class="p">(),</span>
                          <span class="n">transitions</span><span class="o">=</span><span class="p">{</span><span class="n">TRANS_INITIALIZED</span><span class="p">:</span> <span class="n">STATE_NORMAL</span><span class="p">})</span>
-
+        <span class="c1"># Inner fsm</span>
         <span class="n">sm_normal</span> <span class="o">=</span> <span class="n">StateMachine</span><span class="p">(</span><span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="n">TRANS_BATTERY_LOW</span><span class="p">])</span>
         <span class="k">with</span> <span class="n">sm_normal</span><span class="p">:</span>
+            <span class="c1"># Decision state</span>
             <span class="n">StateMachine</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">STATE_DECISION</span><span class="p">,</span> <span class="n">DecideTarget</span><span class="p">(</span><span class="n">helper</span><span class="p">,</span> <span class="n">sm_helper</span><span class="p">),</span>
-                            <span class="n">transitions</span><span class="o">=</span><span class="p">{</span><span class="n">TRANS_DECIDED</span><span class="p">:</span> <span class="n">STATE_GO_TO_RANDOM_POSE</span><span class="p">,</span>
+                            <span class="n">transitions</span><span class="o">=</span><span class="p">{</span><span class="n">TRANS_DECIDED</span><span class="p">:</span> <span class="n">STATE_CHECK_TARGET</span><span class="p">,</span>
                                         <span class="n">TRANS_RECHARGING</span><span class="p">:</span> <span class="n">TRANS_BATTERY_LOW</span><span class="p">})</span>
-            <span class="n">StateMachine</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">STATE_GO_TO_RANDOM_POSE</span><span class="p">,</span> <span class="n">CheckTarget</span><span class="p">(</span><span class="n">helper</span><span class="p">,</span> <span class="n">sm_helper</span><span class="p">),</span>
-                            <span class="n">transitions</span><span class="o">=</span><span class="p">{</span><span class="n">TRANS_WENT_RANDOM_POSE</span><span class="p">:</span> <span class="n">STATE_DECISION</span><span class="p">,</span>
+            <span class="c1"># Checking state</span>
+            <span class="n">StateMachine</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">STATE_CHECK_TARGET</span><span class="p">,</span> <span class="n">CheckTarget</span><span class="p">(</span><span class="n">helper</span><span class="p">,</span> <span class="n">sm_helper</span><span class="p">),</span>
+                            <span class="n">transitions</span><span class="o">=</span><span class="p">{</span><span class="n">TRANS_WENT_TARGET</span><span class="p">:</span> <span class="n">STATE_DECISION</span><span class="p">,</span>
                                         <span class="n">TRANS_RECHARGING</span><span class="p">:</span> <span class="n">TRANS_BATTERY_LOW</span><span class="p">})</span>
-
         <span class="n">StateMachine</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">STATE_NORMAL</span><span class="p">,</span> <span class="n">sm_normal</span><span class="p">,</span>
                          <span class="n">transitions</span><span class="o">=</span><span class="p">{</span><span class="n">TRANS_BATTERY_LOW</span><span class="p">:</span> <span class="n">STATE_RECHARGING</span><span class="p">})</span>   
+        <span class="c1"># Recharging state</span>
         <span class="n">StateMachine</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">STATE_RECHARGING</span><span class="p">,</span> <span class="n">Recharging</span><span class="p">(</span><span class="n">helper</span><span class="p">),</span>
                          <span class="n">transitions</span><span class="o">=</span><span class="p">{</span><span class="n">TRANS_RECHARGED</span><span class="p">:</span> <span class="n">STATE_NORMAL</span><span class="p">})</span> 
 
     <span class="c1"># Create and start the introspection server for visualization </span>
-    <span class="n">sis</span> <span class="o">=</span> <span class="n">smach_ros</span><span class="o">.</span><span class="n">IntrospectionServer</span><span class="p">(</span><span class="s1">&#39;server_name&#39;</span><span class="p">,</span> <span class="n">sm_main</span><span class="p">,</span> <span class="s1">&#39;/SM_ROOT&#39;</span><span class="p">)</span>
+    <span class="n">sis</span> <span class="o">=</span> <span class="n">smach_ros</span><span class="o">.</span><span class="n">IntrospectionServer</span><span class="p">(</span><span class="s1">&#39;fsm_server&#39;</span><span class="p">,</span> <span class="n">sm_main</span><span class="p">,</span> <span class="s1">&#39;/SM_ROOT&#39;</span><span class="p">)</span>
     <span class="n">sis</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
     <span class="c1"># Execute the state machine</span>
