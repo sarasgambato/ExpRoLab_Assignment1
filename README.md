@@ -154,7 +154,7 @@ In particular:
 ### <a id="env"></a> Environment
 The environment used for the simulation is shown in the following figure. 
 <p align="center">
-<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/environment.png" width=30%, height=30%>
+<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/env.png" width=30%, height=30%>
 </p>
 
 ### <a id="req"></a> Working hypothesis
