@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-.. module:: robot_state
+.. module:: robot_states
     :platform: ROS
     :synopsis: Python module for the publisher of the state of the battery .
 
@@ -30,7 +30,7 @@ from Assignment_1.srv import GetPose, GetPoseResponse, SetPose, SetPoseResponse
 LOG_TAG = anm.NODE_ROBOT_STATE
 
 # constant value representing the battery usage time
-BATTERY_TIME = 80
+BATTERY_TIME = 120
 
 class RobotState:
     """
