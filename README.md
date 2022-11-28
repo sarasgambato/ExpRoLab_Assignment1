@@ -1,4 +1,5 @@
 # ExpRoLab Assignment 1 
+The code documentation for this repository can be found [here](https://sarasgambato.github.io/ExpRoLab_Assignment1/index.html).
 
 ## <a id="intro"></a> Introduction
 This repository contains a ROS-based software that implements a Finite State Machine (FSM) to control the behavior of a robot in a indoor environment with rooms, doors and corridors for surveillance purposes. The robot’s objective is to visit the different locations of the environment and check them.
