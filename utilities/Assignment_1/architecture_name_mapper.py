@@ -76,10 +76,9 @@ PARAM_CONTROLLER_TIME = 'test/random_motion_time'
 # -------------------------------------------------
 
 
-# Function used to label each log with a producer tag.
 def tag_log(msg, producer_tag):
     """
-	Function is used to generate the log tag while the FSM is running.
+	Function used to label each log with a producer tag.
 	
     Args:
         msg(Str): message that will be visualized
