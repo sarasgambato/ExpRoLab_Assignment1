@@ -32,7 +32,7 @@ As can be seen, the author decided to create a hierarchical state machine. In pa
 #### UML diagram
 In the following figure the complete software architecture can be seen. It is important to notice that the node `behavior` communicates with the action servers, with the aRMOR server and with the `robot_state` node through a `helper`, which will be descripted in the following sub-section. 
 <p align="center">
-<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/UML.png" width=70%, height=70%>
+<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/UMLdiag.png" width=70%, height=70%>
 </p>
 
 Note that when sending a query to the aRMOR server, only the input parameter `dataprop` is compulsory, the `individual` parameter sometimes is not needed.
