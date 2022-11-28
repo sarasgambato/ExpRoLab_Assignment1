@@ -15,6 +15,7 @@ The requirements were:
 4. As soon as the signal of low battery is received, the robot must go to the recharging room.
 
 ## Software architecture
+#### Finite State Machine
 The Finite State Machine implemented by the software is shown in the following figure.
 <p align="center">
 <img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/finitestate.png" width=40%, height=40%>
@@ -27,12 +28,26 @@ As can be seen, the author decided to create a hierarchical state machine. In pa
     2. **CHECK_TARGET**: this state changes the position of the robot and checks the location. 
 - **RECHARGING**: this states recharges the battery of the robot.
 
+#### UML diagram
 In the following figure the complete software architecture can be seen. It is important to notice that the node `behavior` communicates with the action servers, with the aRMOR server and with the `robot_state` node through a `helper`, which will be descripted in the following sub-section. 
 <p align="center">
 <img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/UML.png" width=70%, height=70%>
 </p>
 
-### The `behavior` node and the `helper`
+Note that when sending a query to the aRMOR server, only the input parameter `dataprop` is compulsory, the `individual` parameter sometimes is not needed.
+
+#### Temporal diagram
+In the following figure the temporal interaction between the software components can be seen.
+<p align="center">
+<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/temporal.png" width=60%, height=60%>
+</p>
+
+The signal of low battery is the one with the highest priority. So, once the signal has been received by the FSM, the software cancels all the other requests to make the robot transition to the state **RECHARGING**. 
+
+In the following section, all the components seen in the diagrams are described in detail.
+
+### Components
+#### The `behavior` node and the `helper`
 This node initializes the FSM and defines its behavior. In particular, in order not to make a "heavy" code, the author decided to implement a 
 `helper.py` script which can be found [here](https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/scripts/helper.py), where almost all of the reasoning is done. This script has three classes, each implementing a different helper:
 1. **ActionClientHelper** simplifies the implementation of a client for ROS action servers.
@@ -41,26 +56,17 @@ This node initializes the FSM and defines its behavior. In particular, in order 
 
 By doing so, by looking at the `behavior.py` script the user is able to clearly understand how the FSM transistions from one state to another; by looking at the `helper.py` the user can understand how the FSM reasons to make the robot change location, go recharge, etc.
 
-### The `robot_state` node
+#### The `robot_state` node
 This node implements two services, `state/set_pose` and `state/get_pose`, allowing to set and get the current robot position, a knowledge that is shared with the nodes `planner` and `controller` :
 - `state/set_pose` requires a `Point` to be set and returns nothing
 - `state/get_pose` requires nothing and returns a `Point`
 
 Also, the node implements a publisher of `Boolean` messages into the `state/battery_low` topic: the message is published every time the battery changes state, which is every 120 seconds, and it is equal to `True` if the battery is low, `False` otherwise. The user can change the value of the battery time by changing the constant variable `BATTERY_TIME` in the [robot_states.py](https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/scripts/robot_states.py) script.
 
-Moreover, the node takes the parameter `config/environment_size` and, through the `helper`, exploits the `state/set_pose` service to set the intial robot position.
+Moreover, the node takes the parameter `config/environment_size` (more details are given in [this section](#param)) and, through the `helper`, exploits the `state/set_pose` service to set the intial robot position.
 
-### The `planner` & `controller` nodes
+#### The `planner` & `controller` nodes
 The user can find a detailed decription of these two nodes in the [README](https://github.com/buoncubi/arch_skeleton/blob/main/README.md) of the [arch_skeleton](https://github.com/buoncubi/arch_skeleton) repository.
-
-### ROS parameters
-The software requires the following ROS parameters:
-- `config/environment_size`: list of two float numbers, `[x_max, y_max]`. The *x*-th and *y*-th coordinates of the environment will be in the range of `[0, x_max)` and `[0, y_max)` respectively.
-- `state/intial_pose`: initial robot position in `[x, y]` coordinates within the `environment_size`.
-- `test/random_plan_points`: list of two integer numbers, `[min_n, max_n]` used to randomly chose the number of via points.
-- `test/random_plan_time`: list of two float numbers, `[min_time, max_time]` used to randomly chose the time required to compute the next via point of the plan.
-- `test/random_motion_time`: list of two float numbers, `[min_time, max_time]` used to randomly
-chose the time required to reach the next via point.
 
 ## Installation & running
 To correctly use this software, the user must follow these steps to install the required packages/repositories.
@@ -117,6 +123,27 @@ rosrun Assignment_1 robot_states.py
 # Terminal tab 5, run the behavior node
 rosrun Assignment_1 behavior.py
 ```
+
+### <a id="param"></a> ROS parameters
+The software requires the following ROS parameters:
+- `config/environment_size`: list of two float numbers, `[x_max, y_max]`. The *x*-th and *y*-th coordinates of the environment will be in the range of `[0, x_max)` and `[0, y_max)` respectively.
+- `state/intial_pose`: initial robot position in `[x, y]` coordinates within the `environment_size`.
+- `test/random_plan_points`: list of two integer numbers, `[min_n, max_n]` used to randomly chose the number of via points.
+- `test/random_plan_time`: list of two float numbers, `[min_time, max_time]` used to randomly chose the time required to compute the next via point of the plan.
+- `test/random_motion_time`: list of two float numbers, `[min_time, max_time]` used to randomly
+chose the time required to reach the next via point.
+
+## Running code behavior
+In the following figure the user can see all the relevant parts showing how the software works
+<p align="center">
+<img src="https://github.com/sarasgambato/ExpRoLab_Assignment1/blob/master/images/behavior.png" width=80%, height=80%>
+</p>
+
+In particular:
+- ***Top left***: the software creates the ontology based on the user inputs; note that the software is able to understand when a wrong type input has been received.
+- ***Top right***: when there are no reachable urgent rooms, the robot continuosly check the corridors.
+- ***Bottom left***: when there are reachable urgent rooms, the robot chooses to checks them one by one, choosing firstly the one with the highest priority, i.e. the one that has not been visited for the longest.
+- ***Bottom right***: as soon as the signal of low battery has been received, the software stops the current action to go to the recharging room. In the figure we can see the the robot was in room R4 and it decided to go to corridor C2, however the signal of low battery was received, so, from room R4, the robot started randomly calculating a path to the recharging room.
 
 ## System's features
 ### <a id="env"></a> Environment
