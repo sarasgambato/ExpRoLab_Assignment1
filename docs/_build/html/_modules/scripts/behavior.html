@@ -37,8 +37,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts.html">scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities.html">utilities</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -80,7 +84,7 @@
 <span class="sd">* Normal: inner FSM with two states, Decision state and Checking state, to decide what location to visit next and to check it.</span>
 
 <span class="sd">Servers:</span>
-<span class="sd">    /fsm_server: introspection server of SMACH, necessary for the developer to visualize the state machine</span>
+<span class="sd">    :attr:`fsm_server`: introspection server of SMACH, necessary for the developer to visualize the state machine</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">rospy</span>
@@ -109,10 +113,10 @@
 <span class="n">TRANS_RECHARGED</span> <span class="o">=</span> <span class="s1">&#39;recharged&#39;</span>
 <span class="n">TRANS_WENT_TARGET</span> <span class="o">=</span> <span class="s1">&#39;went_target&#39;</span>
 
-<span class="c1"># constant values</span>
-<span class="n">SLEEP_TIME</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="c1"># Sleeping time of the waiting thread</span>
+<span class="n">SLEEP_TIME</span> <span class="o">=</span> <span class="n">anm</span><span class="o">.</span><span class="n">SLEEP_TIME</span>
 
-<div class="viewcode-block" id="LoadOntology"><a class="viewcode-back" href="../../index.html#scripts.behavior.LoadOntology">[docs]</a><span class="k">class</span> <span class="nc">LoadOntology</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<div class="viewcode-block" id="LoadOntology"><a class="viewcode-back" href="../../scripts.html#scripts.behavior.LoadOntology">[docs]</a><span class="k">class</span> <span class="nc">LoadOntology</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class related to the state that loads the ontology.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -120,7 +124,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="n">TRANS_INITIALIZED</span><span class="p">])</span>
 
-<div class="viewcode-block" id="LoadOntology.execute"><a class="viewcode-back" href="../../index.html#scripts.behavior.LoadOntology.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+<div class="viewcode-block" id="LoadOntology.execute"><a class="viewcode-back" href="../../scripts.html#scripts.behavior.LoadOntology.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function that is executed when entering the INITIALIZE_MAP state of the fsm. </span>
 <span class="sd">        It loads the topological map and transitions to the state NORMAL.</span>
@@ -136,7 +140,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The map is loaded&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">TRANS_INITIALIZED</span></div></div>
 
-<div class="viewcode-block" id="Recharging"><a class="viewcode-back" href="../../index.html#scripts.behavior.Recharging">[docs]</a><span class="k">class</span> <span class="nc">Recharging</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<div class="viewcode-block" id="Recharging"><a class="viewcode-back" href="../../scripts.html#scripts.behavior.Recharging">[docs]</a><span class="k">class</span> <span class="nc">Recharging</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class related to the state that recharges the robot&#39;s battery.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -145,7 +149,7 @@
         <span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="n">TRANS_RECHARGED</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_helper</span> <span class="o">=</span> <span class="n">helper</span>
 
-<div class="viewcode-block" id="Recharging.execute"><a class="viewcode-back" href="../../index.html#scripts.behavior.Recharging.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+<div class="viewcode-block" id="Recharging.execute"><a class="viewcode-back" href="../../scripts.html#scripts.behavior.Recharging.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function that is executed every time the fsm enters the RECHARGING state.</span>
 <span class="sd">        It recharges the battery of the robot and transitions to the state NORMAL.</span>
@@ -167,7 +171,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_helper</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEP_TIME</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="DecideTarget"><a class="viewcode-back" href="../../index.html#scripts.behavior.DecideTarget">[docs]</a><span class="k">class</span> <span class="nc">DecideTarget</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<div class="viewcode-block" id="DecideTarget"><a class="viewcode-back" href="../../scripts.html#scripts.behavior.DecideTarget">[docs]</a><span class="k">class</span> <span class="nc">DecideTarget</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class related to the state that reasons about the next location that the robot will check.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -179,7 +183,7 @@
         <span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="n">TRANS_DECIDED</span><span class="p">,</span> <span class="n">TRANS_RECHARGING</span><span class="p">],</span> 
                        <span class="n">output_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;current_pose&#39;</span><span class="p">,</span> <span class="s1">&#39;choice&#39;</span><span class="p">,</span> <span class="s1">&#39;random_plan&#39;</span><span class="p">])</span>
 
-<div class="viewcode-block" id="DecideTarget.execute"><a class="viewcode-back" href="../../index.html#scripts.behavior.DecideTarget.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+<div class="viewcode-block" id="DecideTarget.execute"><a class="viewcode-back" href="../../scripts.html#scripts.behavior.DecideTarget.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function that is executed every time the fsm enters the DECIDE_LOCATION state.</span>
 <span class="sd">        It decides in which location to go next based on some criteria.</span>
@@ -216,9 +220,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_helper</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEP_TIME</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="CheckTarget"><a class="viewcode-back" href="../../index.html#scripts.behavior.CheckTarget">[docs]</a><span class="k">class</span> <span class="nc">CheckTarget</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+<div class="viewcode-block" id="CheckTarget"><a class="viewcode-back" href="../../scripts.html#scripts.behavior.CheckTarget">[docs]</a><span class="k">class</span> <span class="nc">CheckTarget</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class related to the state that check the location the robot is in.</span>
+<span class="sd">    Class related to the state that checks the location the robot is in.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">helper</span><span class="p">,</span> <span class="n">sm_helper</span><span class="p">):</span>
@@ -228,10 +232,10 @@
         <span class="n">State</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="o">=</span><span class="p">[</span><span class="n">TRANS_WENT_TARGET</span><span class="p">,</span> <span class="n">TRANS_RECHARGING</span><span class="p">],</span> 
                        <span class="n">input_keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;current_pose&#39;</span><span class="p">,</span> <span class="s1">&#39;choice&#39;</span><span class="p">,</span> <span class="s1">&#39;random_plan&#39;</span><span class="p">])</span>
 
-<div class="viewcode-block" id="CheckTarget.execute"><a class="viewcode-back" href="../../index.html#scripts.behavior.CheckTarget.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+<div class="viewcode-block" id="CheckTarget.execute"><a class="viewcode-back" href="../../scripts.html#scripts.behavior.CheckTarget.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function that is executed every time the fsm enters the CHECK_TARGET state.</span>
-<span class="sd">        It makes the robot go to the wanted location and checks it.</span>
+<span class="sd">        It makes the robot go to the wanted location and check it.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            userdata: used to pass data between states of the FSM</span>
@@ -263,18 +267,18 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_helper</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
             <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLEEP_TIME</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../index.html#scripts.behavior.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../scripts.html#scripts.behavior.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Main function which initalizes the Finite State Machine node &#39;behavior&#39;.</span>
 <span class="sd">    Two helpers are defined to help the state machine take decisions and to manage the battery.</span>
-<span class="sd">    The fsm is hierarchical as to create a more modular and robust architecture. In particula:</span>
+<span class="sd">    The fsm is hierarchical as to create a more modular and robust architecture. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s1">&#39;behavior&#39;</span><span class="p">,</span> <span class="n">log_level</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 
-    <span class="c1"># define the helper that manages the battery stimulus</span>
+    <span class="c1"># Define the helper that manages the battery stimulus</span>
     <span class="n">helper</span> <span class="o">=</span> <span class="n">InterfaceHelper</span><span class="p">()</span>
 
-    <span class="c1"># define the helper for the states of the fsm</span>
+    <span class="c1"># Define the helper for the states of the fsm</span>
     <span class="n">sm_helper</span> <span class="o">=</span> <span class="n">BehaviorHelper</span><span class="p">()</span>
 
     <span class="n">sm_main</span> <span class="o">=</span> <span class="n">StateMachine</span><span class="p">([])</span>

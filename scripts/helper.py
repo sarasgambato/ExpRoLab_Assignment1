@@ -11,15 +11,15 @@ This module implements three classes representing three different helpers: one t
 one that manages the synchronization with subscribers and action servers and one to help the fsm machine taking decisions.
 
 Clients:
-    /armor_client: client to communicate with the aRMOR server
-    /motion/planner: client to communicate with the planner server, which plans a random path with via points
-    /motion/controller: client to communicate with the controller server, which has to follow the path provided by the planner server
+    :attr:`armor_client`: client to communicate with the aRMOR server
+    :attr:`motion/planner`: client to communicate with the planner server, which plans a random path with via points
+    :attr:`motion/controller`: client to communicate with the controller server, which has to follow the path provided by the planner server
 
 Subscribes to:
-    /state/battery_low where the state of the battery (high/low) is published
+    :attr:`state/battery_low` where the state of the battery (high/low) is published
 
 Servers:
-    /state/set_pose: server to set the current robot pose, stored in the 'robot_state' node
+    :attr:`state/set_pose`: server to set the current robot pose, stored in the 'robot_state' node
 """
 
 import rospy
@@ -34,6 +34,9 @@ from Assignment_1.msg import PlanAction, ControlAction
 from Assignment_1.srv import SetPose
 
 client = ArmorClient("armor_client", "my_ontology")
+
+# Parameter for the busy time in the recharge function of class BehaviorHelper
+BUSY_TIME = anm.BUSY_TIME
 
 class ActionClientHelper:
     """
@@ -72,8 +75,8 @@ class ActionClientHelper:
         if not self._is_running:
             # Start the action server
             self._client.send_goal(goal,
-                                   done_cb = self._done_callback,
-                                   feedback_cb = self._feedback_callback)
+                                   done_cb = self.done_callback_,
+                                   feedback_cb = self.feedback_callback_)
             # Set the client's states
             self._is_running = True
             self._is_done = False
@@ -103,7 +106,7 @@ class ActionClientHelper:
 
     def reset_client_states(self):
         """
-        Function to reset the cient state variables stored in this class.
+        Function to reset the client state variables stored in this class.
         
         Args:
             None
@@ -116,12 +119,12 @@ class ActionClientHelper:
         self._is_done = False
         self._results = None
 
-    def _feedback_callback(self, feedback):
+    def feedback_callback_(self, feedback):
         """
         Function called when the action server has to send a feedback to the client.
         
         Args:
-            feedback(Str): feedback message to be sent to the client
+            feedback: feedback message to be sent to the client
             
         Returns:
             None
@@ -136,13 +139,13 @@ class ActionClientHelper:
             # Realise the mutex to unblock ROS-based thread waiting on the same mutex
             self._mutex.release()
 
-    def _done_callback(self, status, results):
+    def done_callback_(self, status, results):
         """
         Function called when the action server has finished its computation.
         
         Args:
-            status(Str): status of the action server
-            results(Str): results from the action server
+            status: status of the action server
+            results: results from the action server
             
         Returns:
             None
@@ -194,13 +197,13 @@ class ActionClientHelper:
             None
             
         Returns:
-            Str: result of the action server, if any, 'None' otherwise
+            Result of the action server, if any, 'None' otherwise
         """
 
         if self._is_done:
             return self._results
         else:
-            print("Error: cannot result")
+            print("Error: cannot get result")
             return None
 
 class InterfaceHelper:
@@ -214,7 +217,7 @@ class InterfaceHelper:
         # Set the initial state
         self.reset_states()
         # Define the callback associated with the battery low ROS subscribers
-        rospy.Subscriber(anm.TOPIC_BATTERY_LOW, Bool, self._battery_callback)
+        rospy.Subscriber(anm.TOPIC_BATTERY_LOW, Bool, self.battery_callback_)
         # Define the clients for the the plan and control action servers
         self.planner_client = ActionClientHelper(anm.ACTION_PLANNER, PlanAction, mutex=self.mutex)
         self.controller_client = ActionClientHelper(anm.ACTION_CONTROLLER, ControlAction, mutex=self.mutex)
@@ -227,13 +230,13 @@ class InterfaceHelper:
         Args: 
             None
         
-        Return:
+        Returns:
             None
         """
 
         self._battery_low = False
 
-    def _battery_callback(self, msg):
+    def battery_callback_(self, msg):
         """
         Function for the subscriber to get messages published from the `robot_state` node into the `/state/battery_low/` topic.
         
@@ -260,7 +263,7 @@ class InterfaceHelper:
         Args:
             None
         
-        Return:
+        Returns:
             Bool: `True` if the battery is low, `False` otherwise
         """
 
@@ -290,7 +293,7 @@ class InterfaceHelper:
 
 class BehaviorHelper:
     """
-    Class that implements some function useful to the fsm to take decisions.
+    Class that implements some function useful for the fsm to take decisions.
     """
 
     def __init__(self):
@@ -363,7 +366,7 @@ class BehaviorHelper:
             dataprop(Str): string representing the property for which we want the timestamp
             ind(Str): string representing the individual of interest
             
-        Return:
+        Returns:
             Str: cleaned timestamp of the property of the individual
         """
 
@@ -471,7 +474,7 @@ class BehaviorHelper:
 
     def recharge(self, position):
         """
-        Function to recharge the battery. The robot checks the reachable location: if room E can be reached, then the robot goes there;
+        Function to recharge the battery. The robot checks the reachable locations: if room E can be reached, then the robot goes there;
         if room E is not in the reachable locations, then choose randomly in which location to go next and repeat until room E is reachable.
         
         Args: 
@@ -503,7 +506,7 @@ class BehaviorHelper:
                 # Update the current position
                 position = choice       
                 print('Almost there...I am in location ' + position + ' now')
-            rospy.sleep(5)
+            rospy.sleep(BUSY_TIME)
         client.manipulation.replace_objectprop_b2_ind('isIn', self.robot, self.recharging_room, position)       
         client.utils.apply_buffered_changes()
         client.utils.sync_buffered_reasoner()

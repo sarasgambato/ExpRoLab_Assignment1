@@ -7,10 +7,10 @@
 
 .. moduleauthor:: Sara Sgambato s4648592@studenti.unige.it
 
-This node adds all the wanted individuals in the map and their properties and it creates all the connections.
+This node adds all the wanted individuals in the map and their properties and it creates all the connections based on user inputs.
 
 Clients:
-    /armor_client: client to communicate with the aRMOR server in order to create the ontology.
+    :attr:`armor_client`: client to communicate with the aRMOR server in order to create the ontology.
 """
 
 import time

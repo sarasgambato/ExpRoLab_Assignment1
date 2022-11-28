@@ -37,8 +37,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"></div>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts.html">scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities.html">utilities</a></li>
+</ul>
+
         </div>
       </div>
     </nav>
@@ -77,15 +81,15 @@
 <span class="sd">one that manages the synchronization with subscribers and action servers and one to help the fsm machine taking decisions.</span>
 
 <span class="sd">Clients:</span>
-<span class="sd">    /armor_client: client to communicate with the aRMOR server</span>
-<span class="sd">    /motion/planner: client to communicate with the planner server, which plans a random path with via points</span>
-<span class="sd">    /motion/controller: client to communicate with the controller server, which has to follow the path provided by the planner server</span>
+<span class="sd">    :attr:`armor_client`: client to communicate with the aRMOR server</span>
+<span class="sd">    :attr:`motion/planner`: client to communicate with the planner server, which plans a random path with via points</span>
+<span class="sd">    :attr:`motion/controller`: client to communicate with the controller server, which has to follow the path provided by the planner server</span>
 
 <span class="sd">Subscribes to:</span>
-<span class="sd">    /state/battery_low where the state of the battery (high/low) is published</span>
+<span class="sd">    :attr:`state/battery_low` where the state of the battery (high/low) is published</span>
 
 <span class="sd">Servers:</span>
-<span class="sd">    /state/set_pose: server to set the current robot pose, stored in the &#39;robot_state&#39; node</span>
+<span class="sd">    :attr:`state/set_pose`: server to set the current robot pose, stored in the &#39;robot_state&#39; node</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">rospy</span>
@@ -101,7 +105,10 @@
 
 <span class="n">client</span> <span class="o">=</span> <span class="n">ArmorClient</span><span class="p">(</span><span class="s2">&quot;armor_client&quot;</span><span class="p">,</span> <span class="s2">&quot;my_ontology&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ActionClientHelper"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper">[docs]</a><span class="k">class</span> <span class="nc">ActionClientHelper</span><span class="p">:</span>
+<span class="c1"># Parameter for the busy time in the recharge function of class BehaviorHelper</span>
+<span class="n">BUSY_TIME</span> <span class="o">=</span> <span class="n">anm</span><span class="o">.</span><span class="n">BUSY_TIME</span>
+
+<div class="viewcode-block" id="ActionClientHelper"><a class="viewcode-back" href="../../scripts.html#scripts.helper.ActionClientHelper">[docs]</a><span class="k">class</span> <span class="nc">ActionClientHelper</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that simplifies the implementation of a client for ROS action servers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -124,7 +131,7 @@
         <span class="c1"># Wait for the action server to be alive</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">wait_for_server</span><span class="p">()</span>
 
-<div class="viewcode-block" id="ActionClientHelper.send_goal"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.send_goal">[docs]</a>    <span class="k">def</span> <span class="nf">send_goal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">goal</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.send_goal"><a class="viewcode-back" href="../../scripts.html#scripts.helper.ActionClientHelper.send_goal">[docs]</a>    <span class="k">def</span> <span class="nf">send_goal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">goal</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to send the action server a new goal only if it is not running; the server can be used only by one client at a time.</span>
 
@@ -138,8 +145,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span><span class="p">:</span>
             <span class="c1"># Start the action server</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">send_goal</span><span class="p">(</span><span class="n">goal</span><span class="p">,</span>
-                                   <span class="n">done_cb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_done_callback</span><span class="p">,</span>
-                                   <span class="n">feedback_cb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_feedback_callback</span><span class="p">)</span>
+                                   <span class="n">done_cb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">done_callback_</span><span class="p">,</span>
+                                   <span class="n">feedback_cb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">feedback_callback_</span><span class="p">)</span>
             <span class="c1"># Set the client&#39;s states</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span> <span class="o">=</span> <span class="kc">False</span>
@@ -148,7 +155,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: to send a new goal cancel the current request first!&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ActionClientHelper.cancel_goals"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.cancel_goals">[docs]</a>    <span class="k">def</span> <span class="nf">cancel_goals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.cancel_goals"><a class="viewcode-back" href="../../scripts.html#scripts.helper.ActionClientHelper.cancel_goals">[docs]</a>    <span class="k">def</span> <span class="nf">cancel_goals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fucntion to stop the computation of the action server, only if it is actually computing.</span>
 <span class="sd">        </span>
@@ -167,9 +174,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: cannot cancel a not running service!&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ActionClientHelper.reset_client_states"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.reset_client_states">[docs]</a>    <span class="k">def</span> <span class="nf">reset_client_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.reset_client_states"><a class="viewcode-back" href="../../scripts.html#scripts.helper.ActionClientHelper.reset_client_states">[docs]</a>    <span class="k">def</span> <span class="nf">reset_client_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Function to reset the cient state variables stored in this class.</span>
+<span class="sd">        Function to reset the client state variables stored in this class.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            None</span>
@@ -182,12 +189,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="kc">None</span></div>
 
-    <span class="k">def</span> <span class="nf">_feedback_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feedback</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.feedback_callback_"><a class="viewcode-back" href="../../scripts.html#scripts.helper.ActionClientHelper.feedback_callback_">[docs]</a>    <span class="k">def</span> <span class="nf">feedback_callback_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feedback</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function called when the action server has to send a feedback to the client.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            feedback(Str): feedback message to be sent to the client</span>
+<span class="sd">            feedback: feedback message to be sent to the client</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
@@ -200,15 +207,15 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_external_feedback_cb</span><span class="p">(</span><span class="n">feedback</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="c1"># Realise the mutex to unblock ROS-based thread waiting on the same mutex</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_done_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.done_callback_"><a class="viewcode-back" href="../../scripts.html#scripts.helper.ActionClientHelper.done_callback_">[docs]</a>    <span class="k">def</span> <span class="nf">done_callback_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function called when the action server has finished its computation.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
-<span class="sd">            status(Str): status of the action server</span>
-<span class="sd">            results(Str): results from the action server</span>
+<span class="sd">            status: status of the action server</span>
+<span class="sd">            results: results from the action server</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            None</span>
@@ -224,9 +231,9 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_external_done_cb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_external_done_cb</span><span class="p">(</span><span class="n">status</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="ActionClientHelper.is_done"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.is_done">[docs]</a>    <span class="k">def</span> <span class="nf">is_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.is_done"><a class="viewcode-back" href="../../scripts.html#scripts.helper.ActionClientHelper.is_done">[docs]</a>    <span class="k">def</span> <span class="nf">is_done</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function returning whether the action server finished its computation or not. This method should be mutex safe.</span>
 <span class="sd">        </span>
@@ -239,7 +246,7 @@
         
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span></div>
 
-<div class="viewcode-block" id="ActionClientHelper.is_running"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.is_running">[docs]</a>    <span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.is_running"><a class="viewcode-back" href="../../scripts.html#scripts.helper.ActionClientHelper.is_running">[docs]</a>    <span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function returning whether the action server is running or not. This method should be mutex safe.</span>
 <span class="sd">        </span>
@@ -252,7 +259,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_running</span></div>
 
-<div class="viewcode-block" id="ActionClientHelper.get_results"><a class="viewcode-back" href="../../index.html#scripts.helper.ActionClientHelper.get_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ActionClientHelper.get_results"><a class="viewcode-back" href="../../scripts.html#scripts.helper.ActionClientHelper.get_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function that gets the result of the action server.</span>
 <span class="sd">        </span>
@@ -260,16 +267,16 @@
 <span class="sd">            None</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
-<span class="sd">            Str: result of the action server, if any, &#39;None&#39; otherwise</span>
+<span class="sd">            Result of the action server, if any, &#39;None&#39; otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_done</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: cannot result&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error: cannot get result&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span></div></div>
 
-<div class="viewcode-block" id="InterfaceHelper"><a class="viewcode-back" href="../../index.html#scripts.helper.InterfaceHelper">[docs]</a><span class="k">class</span> <span class="nc">InterfaceHelper</span><span class="p">:</span>
+<div class="viewcode-block" id="InterfaceHelper"><a class="viewcode-back" href="../../scripts.html#scripts.helper.InterfaceHelper">[docs]</a><span class="k">class</span> <span class="nc">InterfaceHelper</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Class that manages the synchronization with subscribers and action servers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -280,12 +287,12 @@
         <span class="c1"># Set the initial state</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset_states</span><span class="p">()</span>
         <span class="c1"># Define the callback associated with the battery low ROS subscribers</span>
-        <span class="n">rospy</span><span class="o">.</span><span class="n">Subscriber</span><span class="p">(</span><span class="n">anm</span><span class="o">.</span><span class="n">TOPIC_BATTERY_LOW</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_battery_callback</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">Subscriber</span><span class="p">(</span><span class="n">anm</span><span class="o">.</span><span class="n">TOPIC_BATTERY_LOW</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">battery_callback_</span><span class="p">)</span>
         <span class="c1"># Define the clients for the the plan and control action servers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">planner_client</span> <span class="o">=</span> <span class="n">ActionClientHelper</span><span class="p">(</span><span class="n">anm</span><span class="o">.</span><span class="n">ACTION_PLANNER</span><span class="p">,</span> <span class="n">PlanAction</span><span class="p">,</span> <span class="n">mutex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">controller_client</span> <span class="o">=</span> <span class="n">ActionClientHelper</span><span class="p">(</span><span class="n">anm</span><span class="o">.</span><span class="n">ACTION_CONTROLLER</span><span class="p">,</span> <span class="n">ControlAction</span><span class="p">,</span> <span class="n">mutex</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="p">)</span>
 
-<div class="viewcode-block" id="InterfaceHelper.reset_states"><a class="viewcode-back" href="../../index.html#scripts.helper.InterfaceHelper.reset_states">[docs]</a>    <span class="k">def</span> <span class="nf">reset_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="InterfaceHelper.reset_states"><a class="viewcode-back" href="../../scripts.html#scripts.helper.InterfaceHelper.reset_states">[docs]</a>    <span class="k">def</span> <span class="nf">reset_states</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to reset the stimulus for the battery stored as state variable. </span>
 <span class="sd">        This function assumes that no states of the Finite State Machine run concurrently.</span>
@@ -293,13 +300,13 @@
 <span class="sd">        Args: </span>
 <span class="sd">            None</span>
 <span class="sd">        </span>
-<span class="sd">        Return:</span>
+<span class="sd">        Returns:</span>
 <span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_battery_low</span> <span class="o">=</span> <span class="kc">False</span></div>
 
-    <span class="k">def</span> <span class="nf">_battery_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+<div class="viewcode-block" id="InterfaceHelper.battery_callback_"><a class="viewcode-back" href="../../scripts.html#scripts.helper.InterfaceHelper.battery_callback_">[docs]</a>    <span class="k">def</span> <span class="nf">battery_callback_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function for the subscriber to get messages published from the `robot_state` node into the `/state/battery_low/` topic.</span>
 <span class="sd">        </span>
@@ -317,22 +324,22 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_battery_low</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">data</span>
         <span class="k">finally</span><span class="p">:</span>
             <span class="c1"># Release the mutex to eventually unblock the other subscribers or action servers that are waiting</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mutex</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="InterfaceHelper.is_battery_low"><a class="viewcode-back" href="../../index.html#scripts.helper.InterfaceHelper.is_battery_low">[docs]</a>    <span class="k">def</span> <span class="nf">is_battery_low</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="InterfaceHelper.is_battery_low"><a class="viewcode-back" href="../../scripts.html#scripts.helper.InterfaceHelper.is_battery_low">[docs]</a>    <span class="k">def</span> <span class="nf">is_battery_low</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fucntion to get the state variable encoded in this class about the battery level.</span>
 <span class="sd">        </span>
 <span class="sd">        Args:</span>
 <span class="sd">            None</span>
 <span class="sd">        </span>
-<span class="sd">        Return:</span>
+<span class="sd">        Returns:</span>
 <span class="sd">            Bool: `True` if the battery is low, `False` otherwise</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_battery_low</span></div>
 
-<div class="viewcode-block" id="InterfaceHelper.init_robot_pose"><a class="viewcode-back" href="../../index.html#scripts.helper.InterfaceHelper.init_robot_pose">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="InterfaceHelper.init_robot_pose"><a class="viewcode-back" href="../../scripts.html#scripts.helper.InterfaceHelper.init_robot_pose">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">init_robot_pose</span><span class="p">(</span><span class="n">point</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to update the current position of the robot stored in the &#39;robot_state&#39; node.</span>
@@ -354,9 +361,9 @@
         <span class="k">except</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot set current robot position&quot;</span><span class="p">)</span></div></div>
 
-<div class="viewcode-block" id="BehaviorHelper"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper">[docs]</a><span class="k">class</span> <span class="nc">BehaviorHelper</span><span class="p">:</span>
+<div class="viewcode-block" id="BehaviorHelper"><a class="viewcode-back" href="../../scripts.html#scripts.helper.BehaviorHelper">[docs]</a><span class="k">class</span> <span class="nc">BehaviorHelper</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Class that implements some function useful to the fsm to take decisions.</span>
+<span class="sd">    Class that implements some function useful for the fsm to take decisions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -365,7 +372,7 @@
         <span class="c1"># If the recharging room has to be changed, change this value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">recharging_room</span> <span class="o">=</span> <span class="s1">&#39;E&#39;</span>
 
-<div class="viewcode-block" id="BehaviorHelper.clean_list"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.clean_list">[docs]</a>    <span class="k">def</span> <span class="nf">clean_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">list_</span><span class="p">):</span>
+<div class="viewcode-block" id="BehaviorHelper.clean_list"><a class="viewcode-back" href="../../scripts.html#scripts.helper.BehaviorHelper.clean_list">[docs]</a>    <span class="k">def</span> <span class="nf">clean_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">list_</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to clean a list.</span>
 
@@ -390,7 +397,7 @@
 
         <span class="k">return</span> <span class="n">list_</span>  </div>
 
-<div class="viewcode-block" id="BehaviorHelper.get_queried"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.get_queried">[docs]</a>    <span class="k">def</span> <span class="nf">get_queried</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="BehaviorHelper.get_queried"><a class="viewcode-back" href="../../scripts.html#scripts.helper.BehaviorHelper.get_queried">[docs]</a>    <span class="k">def</span> <span class="nf">get_queried</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to get the queried object.</span>
 <span class="sd">        </span>
@@ -421,7 +428,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_list</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">list_</span><span class="p">)</span> </div>
             
 
-<div class="viewcode-block" id="BehaviorHelper.get_timestamp"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.get_timestamp">[docs]</a>    <span class="k">def</span> <span class="nf">get_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataprop</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
+<div class="viewcode-block" id="BehaviorHelper.get_timestamp"><a class="viewcode-back" href="../../scripts.html#scripts.helper.BehaviorHelper.get_timestamp">[docs]</a>    <span class="k">def</span> <span class="nf">get_timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataprop</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to get the timestamp for the &#39;dataprop&#39; property of the &#39;ind&#39; individual.</span>
 <span class="sd">        </span>
@@ -429,14 +436,14 @@
 <span class="sd">            dataprop(Str): string representing the property for which we want the timestamp</span>
 <span class="sd">            ind(Str): string representing the individual of interest</span>
 <span class="sd">            </span>
-<span class="sd">        Return:</span>
+<span class="sd">        Returns:</span>
 <span class="sd">            Str: cleaned timestamp of the property of the individual</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">dataprop_b2_ind</span><span class="p">(</span><span class="n">dataprop</span><span class="p">,</span> <span class="n">ind</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_list</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="BehaviorHelper.reason_reach"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.reason_reach">[docs]</a>    <span class="k">def</span> <span class="nf">reason_reach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reachable</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+<div class="viewcode-block" id="BehaviorHelper.reason_reach"><a class="viewcode-back" href="../../scripts.html#scripts.helper.BehaviorHelper.reason_reach">[docs]</a>    <span class="k">def</span> <span class="nf">reason_reach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reachable</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to decide in which location to go next. It is called when there are no urgent locations.</span>
 <span class="sd">        </span>
@@ -458,7 +465,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">reachable</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="BehaviorHelper.reason_urg"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.reason_urg">[docs]</a>    <span class="k">def</span> <span class="nf">reason_urg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reachable_urg</span><span class="p">):</span>
+<div class="viewcode-block" id="BehaviorHelper.reason_urg"><a class="viewcode-back" href="../../scripts.html#scripts.helper.BehaviorHelper.reason_urg">[docs]</a>    <span class="k">def</span> <span class="nf">reason_urg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reachable_urg</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to decide how to manage the urgent locations. It is called only when there are urgent locations.</span>
 <span class="sd">        The robot goes in the most urgent location, which is the one that has not been visited for the longest time.</span>
@@ -481,7 +488,7 @@
                 <span class="n">visits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">last_visit</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">reachable_urg</span><span class="p">[</span><span class="n">visits</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">visits</span><span class="p">))]</span></div>
 
-<div class="viewcode-block" id="BehaviorHelper.decide_location"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.decide_location">[docs]</a>    <span class="k">def</span> <span class="nf">decide_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BehaviorHelper.decide_location"><a class="viewcode-back" href="../../scripts.html#scripts.helper.BehaviorHelper.decide_location">[docs]</a>    <span class="k">def</span> <span class="nf">decide_location</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to decide in which location the robot will go to next.</span>
 <span class="sd">        </span>
@@ -511,7 +518,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Going to visit location &#39;</span> <span class="o">+</span> <span class="n">target</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">position</span><span class="p">,</span> <span class="n">target</span></div>
 
-<div class="viewcode-block" id="BehaviorHelper.check_location"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.check_location">[docs]</a>    <span class="k">def</span> <span class="nf">check_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<div class="viewcode-block" id="BehaviorHelper.check_location"><a class="viewcode-back" href="../../scripts.html#scripts.helper.BehaviorHelper.check_location">[docs]</a>    <span class="k">def</span> <span class="nf">check_location</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Function to reach and check the location that the robot has to go to.</span>
 <span class="sd">        </span>
@@ -535,9 +542,9 @@
         <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">apply_buffered_changes</span><span class="p">()</span>
         <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span>      </div>
 
-<div class="viewcode-block" id="BehaviorHelper.recharge"><a class="viewcode-back" href="../../index.html#scripts.helper.BehaviorHelper.recharge">[docs]</a>    <span class="k">def</span> <span class="nf">recharge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+<div class="viewcode-block" id="BehaviorHelper.recharge"><a class="viewcode-back" href="../../scripts.html#scripts.helper.BehaviorHelper.recharge">[docs]</a>    <span class="k">def</span> <span class="nf">recharge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Function to recharge the battery. The robot checks the reachable location: if room E can be reached, then the robot goes there;</span>
+<span class="sd">        Function to recharge the battery. The robot checks the reachable locations: if room E can be reached, then the robot goes there;</span>
 <span class="sd">        if room E is not in the reachable locations, then choose randomly in which location to go next and repeat until room E is reachable.</span>
 <span class="sd">        </span>
 <span class="sd">        Args: </span>
@@ -569,7 +576,7 @@
                 <span class="c1"># Update the current position</span>
                 <span class="n">position</span> <span class="o">=</span> <span class="n">choice</span>       
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Almost there...I am in location &#39;</span> <span class="o">+</span> <span class="n">position</span> <span class="o">+</span> <span class="s1">&#39; now&#39;</span><span class="p">)</span>
-            <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">BUSY_TIME</span><span class="p">)</span>
         <span class="n">client</span><span class="o">.</span><span class="n">manipulation</span><span class="o">.</span><span class="n">replace_objectprop_b2_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">recharging_room</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>       
         <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">apply_buffered_changes</span><span class="p">()</span>
         <span class="n">client</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span>

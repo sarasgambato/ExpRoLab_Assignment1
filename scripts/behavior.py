@@ -14,7 +14,7 @@ This module defines the behavior of the Finite State Machine. It has two states 
 * Normal: inner FSM with two states, Decision state and Checking state, to decide what location to visit next and to check it.
 
 Servers:
-    /fsm_server: introspection server of SMACH, necessary for the developer to visualize the state machine
+    :attr:`fsm_server`: introspection server of SMACH, necessary for the developer to visualize the state machine
 """
 
 import rospy
@@ -43,8 +43,8 @@ TRANS_RECHARGING = 'recharging'
 TRANS_RECHARGED = 'recharged'
 TRANS_WENT_TARGET = 'went_target'
 
-# constant values
-SLEEP_TIME = 0.3
+# Sleeping time of the waiting thread
+SLEEP_TIME = anm.SLEEP_TIME
 
 class LoadOntology(State):
     """
@@ -152,7 +152,7 @@ class DecideTarget(State):
 
 class CheckTarget(State):
     """
-    Class related to the state that check the location the robot is in.
+    Class related to the state that checks the location the robot is in.
     """
 
     def __init__(self, helper, sm_helper):
@@ -165,7 +165,7 @@ class CheckTarget(State):
     def execute(self, userdata):
         """
         Function that is executed every time the fsm enters the CHECK_TARGET state.
-        It makes the robot go to the wanted location and checks it.
+        It makes the robot go to the wanted location and check it.
         
         Args:
             userdata: used to pass data between states of the FSM
@@ -201,14 +201,14 @@ def main():
     """
     Main function which initalizes the Finite State Machine node 'behavior'.
     Two helpers are defined to help the state machine take decisions and to manage the battery.
-    The fsm is hierarchical as to create a more modular and robust architecture. In particula:
+    The fsm is hierarchical as to create a more modular and robust architecture. 
     """
     rospy.init_node('behavior', log_level = rospy.INFO)
 
-    # define the helper that manages the battery stimulus
+    # Define the helper that manages the battery stimulus
     helper = InterfaceHelper()
 
-    # define the helper for the states of the fsm
+    # Define the helper for the states of the fsm
     sm_helper = BehaviorHelper()
 
     sm_main = StateMachine([])

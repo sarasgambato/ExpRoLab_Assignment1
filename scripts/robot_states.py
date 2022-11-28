@@ -3,19 +3,19 @@
 """
 .. module:: robot_states
     :platform: ROS
-    :synopsis: Python module for the publisher of the state of the battery .
+    :synopsis: Python module for the publisher of the state of the battery.
 
-.. moduleauthor:: Sara Sgambato s4648592@studneti.unige.it
+.. moduleauthor:: Sara Sgambato s4648592@studenti.unige.it
 
 This node has a class in which two services are defined: one to get the current robot pose and one to set it.
 Also, the class defines a publisher to notify that the battery is low.
 
 Publishes to:
-    /state/battery_low the state of the battery (high/low)
+    :attr:`state/battery_low` the state of the battery (high/low)
 
 Servers: 
-    /state/set_pose: server to set the current robot pose
-    /state/get_pose: server to get the current robot pose
+    :attr:`state/set_pose`: server to set the current robot pose
+    :attr:`state/get_pose`: server to get the current robot pose
 """
 
 import threading
@@ -29,12 +29,12 @@ from Assignment_1.srv import GetPose, GetPoseResponse, SetPose, SetPoseResponse
 # A tag for identifying logs producer
 LOG_TAG = anm.NODE_ROBOT_STATE
 
-# constant value representing the battery usage time
-BATTERY_TIME = 120
+# Constant value representing the battery usage time
+BATTERY_TIME = anm.BATTERY_TIME
 
 class RobotState:
     """
-    Class implementing the services or the robot position and the publisher for the battery level.
+    Class implementing the services of the robot position and the publisher for the battery level.
     """
 
     def __init__(self):
@@ -47,7 +47,7 @@ class RobotState:
         rospy.Service(anm.SERVER_GET_POSE, GetPose, self.get_pose)
         rospy.Service(anm.SERVER_SET_POSE, SetPose, self.set_pose)
         # Start publisher on a separate thread
-        th = threading.Thread(target=self._is_battery_low)
+        th = threading.Thread(target=self.is_battery_low_)
         th.start()
         # Log information
         log_msg = (f'Initialise node `{anm.NODE_ROBOT_STATE}` with services `{anm.SERVER_GET_POSE}` and '
@@ -90,7 +90,7 @@ class RobotState:
         response.pose = self._pose
         return response
 
-    def _is_battery_low(self):
+    def is_battery_low_(self):
         """
         Fucntion that publishes the changes of the battery level.
         
@@ -102,9 +102,9 @@ class RobotState:
         """
 
         publisher = rospy.Publisher(anm.TOPIC_BATTERY_LOW, Bool, queue_size=1, latch=True)
-        self._battery_notifier(publisher)
+        self.battery_notifier_(publisher)
 
-    def _battery_notifier(self, publisher):
+    def battery_notifier_(self, publisher):
         """
         Function that publishes when the battery changes state (high/low) based on a constant delay.
         
