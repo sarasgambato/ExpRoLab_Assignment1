@@ -149,7 +149,7 @@ In particular:
 - ***Top left***: the software creates the ontology based on the user inputs; note that the software is able to understand when a wrong type input has been received.
 - ***Top right***: when there are no reachable urgent rooms, the robot continuosly check the corridors.
 - ***Bottom left***: when there are reachable urgent rooms, the robot chooses to checks them one by one, choosing firstly the one with the highest priority, i.e. the one that has not been visited for the longest.
-- ***Bottom right***: as soon as the signal of low battery has been received, the software stops the current action to go to the recharging room. In the figure we can see the the robot was in room R4 and it decided to go to corridor C2, however the signal of low battery was received, so, from room R4, the robot started randomly calculating a path to the recharging room.
+- ***Bottom right***: as soon as the signal of low battery has been received, the software stops the current action to go to the recharging room. In the figure we can see the the robot was in room R3 and it decided to go to corridor C2, however the signal of low battery was received, so, from room R3, the robot started randomly calculating a path to the recharging room.
 
 ## System's features
 ### <a id="env"></a> Environment
