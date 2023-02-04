@@ -75,7 +75,7 @@ To correctly use this software, the user must follow these steps to install the 
 2. Install the [aRMOR package](https://github.com/EmaroLab/armor) by following [this tutorial](https://github.com/EmaroLab/armor/issues/7).
 3. Clone the [armor_py_api](https://github.com/EmaroLab/armor_py_api) repository in your ROS workspace.
 4. Install the [SMACH package](http://wiki.ros.org/smach) by running `sudo apt-get install ros-noetic-executive-smach*` or equivalent for your ROS distribution.
-5. Run `chmod +x <fine_name>` for each file inside the folder `scripts` of the package `ExpRoLab_Assignment1`.
+5. Run `chmod +x <file_name>` for each file inside the folder `scripts` of the package `ExpRoLab_Assignment1`.
 6. Run `catkin_make` from the root of your ROS workspace.
 
 ### Note
@@ -174,7 +174,5 @@ Moreover, the robot may find itself checking the corridors for a very long perio
 
 ## Authors & Contacts
 [Sara Sgambato](https://github.com/sarasgambato)
-
 sarasgambato@yahoo.it (personal email)
-
 s4648592@studenti.unige.it (institutional email)
