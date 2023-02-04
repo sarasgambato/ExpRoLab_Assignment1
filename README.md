@@ -174,5 +174,7 @@ Moreover, the robot may find itself checking the corridors for a very long perio
 
 ## Authors & Contacts
 [Sara Sgambato](https://github.com/sarasgambato)
+
 sarasgambato@yahoo.it (personal email)
+
 s4648592@studenti.unige.it (institutional email)
